@@ -1,251 +1,808 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WayunaikLearn | Aprende Wayuunaiki</title>
-  <style>
-    :root {
-      --azul: #003f5c;
-      --beige: #f5f3ef;
-      --dorado: #d4a017;
-      --gris: #6e6e6e;
-      --verde: #00b894;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WayunaikLearn — Duolingo Lite (Wayuunaiki)</title>
+<link rel="icon" href="data:;">
+<style>
+  /* --------- Paleta y reset --------- */
+  :root{
+    --bg:#F5EDE6;       /* beige suave */
+    --primary:#0B8457;  /* verde tipo Duolingo */
+    --accent:#C14953;   /* terracota cultural */
+    --card:#FFFFFF;
+    --muted:#6B6B6B;
+    --glass: rgba(255,255,255,0.85);
+    --shadow: 0 10px 30px rgba(11,132,87,0.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg,var(--bg), #FFFDF9);
+    color:#123;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:24px auto;padding:18px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:56px;height:56px;border-radius:12px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;
+    box-shadow:var(--shadow);
+  }
+  h1{margin:0;font-size:18px;color:var(--primary)}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
 
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--beige);
-      color: var(--azul);
-    }
+  /* layout */
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:18px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
 
-    header {
-      background-color: var(--azul);
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+  /* side panel */
+  .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow)}
+  .user{
+    display:flex;gap:12px;align-items:center;margin-bottom:10px;
+  }
+  .avatar{
+    width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#fff1e6,#e6fff2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);
+    font-size:18px;border:2px solid rgba(0,0,0,0.04)
+  }
+  .stats{display:flex;flex-direction:column;gap:6px}
+  .progress-bar{height:10px;background:linear-gradient(90deg,#e9f7f0,#f3f9f6);border-radius:8px;overflow:hidden}
+  .progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));width:0%}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
+  .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn-primary{background:linear-gradient(90deg,var(--primary),#0fb97a);color:white;box-shadow:0 6px 18px rgba(11,132,87,0.14)}
+  .btn-ghost{background:transparent;border:1px solid rgba(11,132,87,0.12);color:var(--primary)}
+  .muted{color:var(--muted);font-size:13px}
 
-    .login, .main {
-      display: none;
-    }
+  nav.sidebar{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  nav.sidebar button{background:transparent;border:none;text-align:left;padding:8px;border-radius:8px;cursor:pointer;font-weight:600;color:var(--primary)}
+  nav.sidebar button.active{background:linear-gradient(90deg, rgba(11,132,87,0.08), rgba(193,73,83,0.03));box-shadow:inset 0 1px 0 rgba(255,255,255,0.3)}
 
-    .active {
-      display: block;
-    }
+  /* main content */
+  main{min-height:60vh}
+  .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow);margin-bottom:12px}
+  .center{display:flex;align-items:center;justify-content:center}
+  .flex{display:flex;gap:12px;align-items:center}
 
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid var(--gris);
-      font-size: 1rem;
-    }
+  /* lesson tiles */
+  .lesson-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .tile{background:linear-gradient(180deg,#fff,#fcfffb);padding:12px;border-radius:10px;border-left:6px solid var(--primary);cursor:pointer}
+  .tile.locked{opacity:0.5;filter:grayscale(20%);cursor:default;border-left-color:rgba(0,0,0,0.06)}
 
-    button {
-      background-color: var(--dorado);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+  /* exercise */
+  .exercise-question{font-size:18px;margin-bottom:10px}
+  .options{display:grid;gap:8px}
+  .option{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:#fbfff7}
+  .option.correct{background:linear-gradient(90deg,#dff4e6,#c7f0da);border-color:rgba(11,132,87,0.2)}
+  .option.wrong{background:linear-gradient(90deg,#ffdede,#ffe8e8);border-color:rgba(193,73,83,0.15)}
 
-    button:hover {
-      background-color: var(--verde);
-    }
+  .small{font-size:13px;padding:6px 8px;border-radius:8px}
 
-    nav {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-      background: var(--azul);
-      border-radius: 12px;
-      overflow: hidden;
-    }
+  /* footer */
+  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
 
-    nav button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 15px;
-      flex: 1;
-      font-size: 1rem;
-    }
+  /* animations */
+  .fade-in{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-    nav button:hover {
-      background-color: var(--dorado);
-    }
-
-    section {
-      margin-top: 20px;
-    }
-
-    .lesson {
-      background-color: white;
-      border-left: 5px solid var(--dorado);
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-    }
-
-    .dictionary-item {
-      background-color: white;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    audio {
-      height: 30px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 10px;
-      margin-top: 20px;
-      font-size: 0.8rem;
-      color: var(--gris);
-    }
-  </style>
+  /* responsive */
+  @media (max-width:520px){
+    h1{font-size:16px}
+    .grid{gap:10px}
+  }
+</style>
 </head>
 <body>
-  <header>WayunaikLearn — Aprende Wayuunaiki</header>
-
-  <div class="container">
-    <!-- LOGIN -->
-    <div id="loginScreen" class="login active">
-      <h2>Iniciar Sesión</h2>
-      <input type="text" id="user" placeholder="Usuario">
-      <input type="password" id="pass" placeholder="Contraseña">
-      <button onclick="login()">Ingresar</button>
-      <p style="text-align:center;">¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate</a></p>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">WL</div>
+      <div>
+        <h1>WayunaikLearn</h1>
+        <p class="lead">Aprende Wayuunaiki — Modo juego</p>
+      </div>
     </div>
 
-    <!-- REGISTRO -->
-    <div id="registerScreen" class="login">
-      <h2>Registrarse</h2>
-      <input type="text" id="newUser" placeholder="Usuario nuevo">
-      <input type="password" id="newPass" placeholder="Contraseña">
-      <button onclick="register()">Crear cuenta</button>
-      <p style="text-align:center;"><a href="#" onclick="showLogin()">Volver al inicio</a></p>
+    <div id="top-actions">
+      <!-- dynamic -->
     </div>
+  </header>
 
-    <!-- APP PRINCIPAL -->
-    <div id="mainApp" class="main">
-      <nav>
-        <button onclick="showTab('lessons')">Lecciones</button>
-        <button onclick="showTab('dictionary')">Diccionario</button>
-        <button onclick="showTab('progress')">Progreso</button>
-      </nav>
+  <div class="grid">
+    <!-- SIDE -->
+    <aside class="panel">
+      <div id="auth-area">
+        <!-- login/register rendered here -->
+      </div>
 
-      <!-- LECCIONES -->
-      <section id="lessons" class="tab active">
-        <h2>Lecciones de Wayuunaiki</h2>
-        <div class="lesson">
-          <h3>1. Saludos básicos</h3>
-          <p>Aprende a saludar en Wayuunaiki.</p>
-          <button onclick="startLesson('Saludos básicos')">Iniciar</button>
+      <div id="user-panel" style="display:none">
+        <div class="user">
+          <div id="avatar" class="avatar">JM</div>
+          <div class="stats">
+            <div id="welcome"><strong>Juan</strong></div>
+            <div class="muted" id="role">Usuario</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+              <div style="flex:1">
+                <div style="font-size:12px" class="muted">Progreso</div>
+                <div class="progress-bar"><i id="progbar"></i></div>
+                <div style="font-size:12px" class="muted" id="xptext">XP: 0 · Nivel 1</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="lesson">
-          <h3>2. Familia</h3>
-          <p>Palabras para referirte a los miembros de la familia.</p>
-          <button onclick="startLesson('Familia')">Iniciar</button>
-        </div>
-        <div class="lesson">
-          <h3>3. Naturaleza</h3>
-          <p>Aprende vocabulario de animales y plantas.</p>
-          <button onclick="startLesson('Naturaleza')">Iniciar</button>
-        </div>
-      </section>
 
-      <!-- DICCIONARIO -->
-      <section id="dictionary" class="tab" style="display:none;">
-        <h2>Diccionario Español ↔ Wayuunaiki</h2>
-        <div class="dictionary-item">
-          <span><b>Hola</b> — <i>Ashajawaa</i></span>
-          <audio controls src=""></audio>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="btn-continue">Continuar</button>
+          <button class="btn btn-ghost" id="btn-logout">Cerrar sesión</button>
         </div>
-        <div class="dictionary-item">
-          <span><b>Madre</b> — <i>Piichi</i></span>
-          <audio controls src=""></audio>
-        </div>
-        <div class="dictionary-item">
-          <span><b>Agua</b> — <i>Wüin</i></span>
-          <audio controls src=""></audio>
-        </div>
-      </section>
 
-      <!-- PROGRESO -->
-      <section id="progress" class="tab" style="display:none;">
-        <h2>Tu progreso</h2>
-        <p><b>Nivel actual:</b> Principiante</p>
-        <p><b>Lecciones completadas:</b> 2 / 10</p>
-        <p><b>Racha actual:</b> 🔥 3 días consecutivos</p>
-      </section>
-    </div>
+        <div style="margin-top:12px">
+          <div class="muted">Racha</div>
+          <div style="font-size:20px;font-weight:800">🔥 <span id="streak">0</span> días</div>
+        </div>
+
+        <nav class="sidebar" style="margin-top:12px">
+          <button class="active" data-view="dashboard">Dashboard</button>
+          <button data-view="lessons">Lecciones</button>
+          <button data-view="dictionary">Diccionario</button>
+          <button data-view="profile">Perfil</button>
+          <button data-view="admin">Admin</button>
+        </nav>
+
+        <div style="margin-top:12px">
+          <button class="small" id="backup-btn">Exportar/Importar datos</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px" class="muted">WayunaikLearn • Demo local</div>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+      <!-- VISTAS -->
+      <div id="view-dashboard" class="card fade-in">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h2 style="margin:0">Bienvenido a WayunaikLearn</h2>
+            <p class="muted" id="dash-sub">Practique diariamente y mantenga su racha.</p>
+          </div>
+          <div class="center">
+            <div style="text-align:right">
+              <div class="muted">Meta diaria</div>
+              <div style="font-weight:800">20 XP / día</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px" class="card">
+          <h3 style="margin:0 0 8px 0">Progreso rápido</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <div style="min-width:180px">
+              <div class="muted">Nivel</div>
+              <div style="font-size:22px;font-weight:800" id="dash-level">1</div>
+            </div>
+            <div style="min-width:220px">
+              <div class="muted">XP total</div>
+              <div style="font-size:22px;font-weight:800" id="dash-xp">0</div>
+            </div>
+            <div style="min-width:220px">
+              <div class="muted">Lecciones completadas</div>
+              <div style="font-size:22px;font-weight:800" id="dash-completed">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="card">
+          <h3 style="margin:0 0 8px 0">Continuar con la lección</h3>
+          <div id="continue-area" class="muted">No hay lecciones recientes. Inicie una lección desde el panel de Lecciones.</div>
+        </div>
+      </div>
+
+      <div id="view-lessons" class="card" style="display:none">
+        <h2>Lecciones</h2>
+        <p class="muted">Completa lecciones para ganar XP y subir de nivel.</p>
+
+        <div style="margin-top:12px" class="card">
+          <h4 style="margin:0 0 8px 0">Niveles</h4>
+          <div id="levels-list" class="lesson-list"></div>
+        </div>
+
+        <div style="margin-top:12px" id="lesson-area" class="card" hidden>
+          <button class="small" id="close-lesson">&larr; Volver</button>
+          <h3 id="lesson-title"></h3>
+          <p class="muted" id="lesson-desc"></p>
+          <div id="exercise-area" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div id="view-dictionary" class="card" style="display:none">
+        <h2>Diccionario bilingüe</h2>
+        <input id="dict-search" placeholder="Buscar (español o wayu)" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);width:100%;margin-bottom:8px" />
+        <div id="dict-list"></div>
+      </div>
+
+      <div id="view-profile" class="card" style="display:none">
+        <h2>Perfil</h2>
+        <div class="muted">Editar su perfil</div>
+        <div style="margin-top:8px">
+          <label>Nombre</label>
+          <input id="profile-name" />
+          <label>Iniciales/avatar</label>
+          <input id="profile-initials" maxlength="2" />
+          <div style="margin-top:8px">
+            <button class="btn btn-primary" id="save-profile">Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-admin" class="card" style="display:none">
+        <h2>Administrador — creación rápida</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="card">
+            <h4>Crear nivel</h4>
+            <input id="new-level-name" placeholder="Nombre nivel (ej. Básico 1)" />
+            <textarea id="new-level-desc" placeholder="Descripción" style="height:70px"></textarea>
+            <button class="btn btn-primary" id="create-level">Crear nivel</button>
+          </div>
+          <div class="card">
+            <h4>Crear lección</h4>
+            <select id="sel-level"></select>
+            <input id="new-lesson-title" placeholder="Título lección" />
+            <textarea id="new-lesson-body" placeholder="Descripción/Contenido" style="height:70px"></textarea>
+            <button class="btn btn-primary" id="create-lesson">Crear lección</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="card">
+          <h4>Agregar palabra al diccionario</h4>
+          <input id="dict-es" placeholder="Español" />
+          <input id="dict-wy" placeholder="Wayuunaiki (transcripción)" />
+          <button class="btn btn-primary" id="create-word">Agregar palabra</button>
+        </div>
+      </div>
+
+    </main>
   </div>
 
-  <footer>
-    © 2025 WayunaikLearn | Desarrollado por CorreQ
-  </footer>
+  <footer>WayunaikLearn • Demo local — Hecho por CorreQ · 2025</footer>
+</div>
 
-  <script>
-    function showRegister() {
-      document.getElementById("loginScreen").classList.remove("active");
-      document.getElementById("registerScreen").classList.add("active");
-    }
+<script>
+/* =========================
+   Datos iniciales y util
+   ========================= */
+const STORAGE_KEY='wayunaik_data_v1';
+const USER_KEY='wayunaik_current_user';
 
-    function showLogin() {
-      document.getElementById("registerScreen").classList.remove("active");
-      document.getElementById("loginScreen").classList.add("active");
-    }
+// Estructura de datos por defecto
+const defaults = {
+  users: {},
+  levels: [],
+  lessons: [],
+  exercises: [],
+  dictionary: [],
+  results: {}
+};
 
-    function login() {
-      const user = document.getElementById("user").value;
-      const pass = document.getElementById("pass").value;
-      if (user && pass) {
-        localStorage.setItem("wayunaik_user", user);
-        document.getElementById("loginScreen").classList.remove("active");
-        document.getElementById("mainApp").classList.add("active");
-      } else {
-        alert("Ingrese usuario y contraseña");
-      }
-    }
+// util: load/save
+function loadData(){ try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : structuredClone(defaults); } catch(e){ return structuredClone(defaults); } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
-    function register() {
-      const newUser = document.getElementById("newUser").value;
-      const newPass = document.getElementById("newPass").value;
-      if (newUser && newPass) {
-        localStorage.setItem("wayunaik_user", newUser);
-        alert("Usuario registrado correctamente. Ahora puede iniciar sesión.");
-        showLogin();
-      } else {
-        alert("Complete todos los campos");
-      }
-    }
+// crear demo si vacío
+let data = loadData();
+if (data.levels.length===0){
+  // demo levels/lessons/exercises/dict
+  const lvl1 = { id: genId(), name:'Básico 1', desc:'Saludos y presentaciones' };
+  const lvl2 = { id: genId(), name:'Intermedio 1', desc:'Familia y rutinas' };
+  data.levels.push(lvl1, lvl2);
 
-    function showTab(tab) {
-      document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-      document.getElementById(tab).style.display = "block";
-    }
+  const les1 = { id: genId(), levelId: lvl1.id, title:'Saludos', body:'Saludos básicos en Wayuunaiki' };
+  data.lessons.push(les1);
 
-    function startLesson(lesson) {
-      alert("Iniciando lección: " + lesson);
+  // exercises: mcq + open
+  data.exercises.push({
+    id: genId(), lessonId: les1.id, type:'mcq',
+    prompt:'¿Cómo se dice "Hola" en Wayuunaiki?',
+    options:['Ashajawaa','Washi','Süchi'], correctIndex:0, xp:10
+  });
+  data.exercises.push({
+    id: genId(), lessonId: les1.id, type:'text',
+    prompt:'Traduce al español: "Ashajawaa"', answer:'Hola', xp:10
+  });
+
+  // diccionario
+  data.dictionary.push({ id: genId(), spanish:'Hola', wayu:'Ashajawaa' });
+  data.dictionary.push({ id: genId(), spanish:'Madre', wayu:'Piichi' });
+  saveData(data);
+}
+
+/* =========================
+   Estado de sesión
+   ========================= */
+let state = {
+  currentView:'dashboard',
+  currentUser:null,
+  currentLesson:null,
+  sessionExerciseIndex:0
+};
+
+const el = sel=>document.querySelector(sel);
+const els = sel=>document.querySelectorAll(sel);
+
+/* =========================
+   Inicialización UI
+   ========================= */
+function init(){
+  renderAuthArea();
+  renderTopActions();
+  bindNavButtons();
+  renderSideNav();
+  renderLevels();
+  renderDictionary();
+  renderProfile();
+  renderAdminLevels();
+  showView('dashboard');
+
+  const cur = localStorage.getItem(USER_KEY);
+  if (cur) {
+    const u = JSON.parse(cur);
+    signInLocal(u.username, false); // restore
+  }
+}
+init();
+
+/* =========================
+   Authentication (local)
+   ========================= */
+function renderAuthArea(){
+  const authArea = el('#auth-area');
+  authArea.innerHTML = `
+    <div id="login-form" class="card">
+      <h3>Iniciar sesión</h3>
+      <input id="login-user" placeholder="Usuario (email opcional)" />
+      <input id="login-pass" placeholder="Contraseña" type="password" />
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" id="btn-login">Ingresar</button>
+        <button class="btn btn-ghost" id="btn-show-register">Registrarse</button>
+      </div>
+      <p class="muted" style="margin-top:8px">Para demo: marque 'admin' en registro si desea panel admin local.</p>
+    </div>
+
+    <div id="register-form" class="card" style="display:none">
+      <h3>Crear cuenta</h3>
+      <input id="reg-user" placeholder="Usuario" />
+      <input id="reg-pass" placeholder="Contraseña" type="password" />
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+        <label style="font-size:13px"><input id="reg-admin" type="checkbox" /> Crear como admin</label>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" id="btn-create">Crear</button>
+        <button class="btn btn-ghost" id="btn-cancel-create">Cancelar</button>
+      </div>
+    </div>
+  `;
+  // events
+  el('#btn-show-register').onclick = ()=>{ el('#login-form').style.display='none'; el('#register-form').style.display='block'; };
+  el('#btn-cancel-create').onclick = ()=>{ el('#login-form').style.display='block'; el('#register-form').style.display='none'; };
+  el('#btn-create').onclick = createAccount;
+  el('#btn-login').onclick = ()=>{ const u=el('#login-user').value.trim(), p=el('#login-pass').value; signInLocal(u); };
+}
+
+function createAccount(){
+  const username = el('#reg-user').value.trim();
+  const pass = el('#reg-pass').value;
+  const isAdmin = el('#reg-admin').checked;
+  if (!username || !pass) return alert('Complete usuario y contraseña');
+  const users = data.users || {};
+  if (users[username]) return alert('Usuario ya existe');
+  users[username] = { username, pass, initials: initialsFrom(username), isAdmin, xp:0, level:1, streak:0, completed:[] };
+  data.users = users; saveData(data);
+  alert('Cuenta creada. Ya puede iniciar sesión.');
+  el('#reg-user').value = el('#reg-pass').value = '';
+  el('#login-form').style.display='block'; el('#register-form').style.display='none';
+}
+
+function signInLocal(username, save=true){
+  if (!username) return alert('Ingrese usuario');
+  const user = data.users[username];
+  if (!user) return alert('Usuario no encontrado. Regístrese.');
+  state.currentUser = username;
+  localStorage.setItem(USER_KEY, JSON.stringify({ username }));
+  renderAfterLogin();
+}
+
+function logout(){
+  state.currentUser = null;
+  localStorage.removeItem(USER_KEY);
+  renderAfterLogout();
+}
+
+/* =========================
+   Render después login
+   ========================= */
+function renderAfterLogin(){
+  // hide auth forms, show user panel
+  el('#auth-area').style.display='none';
+  el('#user-panel').style.display='block';
+  updateUserPanel();
+  renderTopActions();
+  renderSideNav();
+  showView('dashboard');
+}
+
+function renderAfterLogout(){
+  el('#auth-area').style.display='block';
+  el('#user-panel').style.display='none';
+  renderTopActions();
+  showView('dashboard');
+}
+
+/* =========================
+   Top actions (login/register OR profile)
+   ========================= */
+function renderTopActions(){
+  const top = el('#top-actions');
+  top.innerHTML = '';
+  if (!state.currentUser){
+    const b1 = document.createElement('button'); b1.className='btn btn-ghost'; b1.textContent='Iniciar / Registrar';
+    b1.onclick = ()=>{ window.scrollTo({top:0,behavior:'smooth'}); }
+    top.appendChild(b1);
+  } else {
+    const usr = data.users[state.currentUser];
+    const span = document.createElement('div'); span.className='muted'; span.textContent = usr.username + (usr.isAdmin ? ' · Admin' : '');
+    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Salir';
+    btn.onclick = ()=>{ logout(); };
+    top.appendChild(span); top.appendChild(btn);
+  }
+}
+
+/* =========================
+   Side nav behavior
+   ========================= */
+function bindNavButtons(){
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    if (t.matches('nav.sidebar button')) {
+      document.querySelectorAll('nav.sidebar button').forEach(b=>b.classList.remove('active'));
+      t.classList.add('active');
+      const view = t.dataset.view;
+      showView(view);
     }
-  </script>
+  });
+  el('#btn-logout').onclick = logout;
+  el('#btn-continue').onclick = ()=>{ if (data.users[state.currentUser]) { const completed = data.users[state.currentUser].lastLessonId; if (completed) openLessonById(completed); else showView('lessons'); } }
+  el('#backup-btn').onclick = ()=>{ exportImportDialog(); };
+}
+
+/* =========================
+   Render side nav & user info
+   ========================= */
+function renderSideNav(){
+  if (!state.currentUser) return;
+  const u = data.users[state.currentUser];
+  el('#avatar').textContent = u.initials || initialsFrom(u.username);
+  el('#welcome').innerHTML = `<strong>${u.username}</strong>`;
+  el('#role').textContent = u.isAdmin ? 'Administrador' : 'Usuario';
+  el('#progbar').style.width = Math.min(100, Math.round((u.xp%100)/100*100)) + '%';
+  el('#xptext').textContent = `XP: ${u.xp} · Nivel ${u.level}`;
+  el('#streak').textContent = u.streak || 0;
+  el('#dash-level').textContent = u.level;
+  el('#dash-xp').textContent = u.xp;
+  el('#dash-completed').textContent = (u.completed||[]).length;
+}
+
+/* =========================
+   Views handling
+   ========================= */
+function showView(view){
+  state.currentView = view;
+  ['dashboard','lessons','dictionary','profile','admin'].forEach(v=>{
+    el('#view-'+v).style.display = (v===view ? 'block' : 'none');
+  });
+  // update dashboard
+  if (view==='dashboard') {
+    if (state.currentUser) {
+      const u=data.users[state.currentUser];
+      el('#continue-area').textContent = u.lastLessonTitle ? `Última lección: ${u.lastLessonTitle}` : 'No hay lecciones recientes.';
+    }
+  }
+}
+
+/* =========================
+   Levels & lessons render
+   ========================= */
+function renderLevels(){
+  const container = el('#levels-list'); container.innerHTML = '';
+  data.levels.forEach(level=>{
+    const tile = document.createElement('div'); tile.className='tile';
+    const locked = false; // control de desbloqueo por XP se puede añadir
+    if (locked) tile.classList.add('locked');
+    tile.innerHTML = `<strong>${level.name}</strong><div class="muted">${level.desc||''}</div>`;
+    tile.onclick = ()=>{ if (!locked) openLevel(level.id); };
+    container.appendChild(tile);
+  });
+}
+
+function openLevel(levelId){
+  // mostrar lecciones pertenecientes
+  const lessons = data.lessons.filter(l=>l.levelId===levelId);
+  const area = el('#lesson-area');
+  area.hidden = false;
+  el('#lesson-title').textContent = data.levels.find(l=>l.id===levelId).name;
+  el('#lesson-desc').textContent = 'Seleccione una lección';
+  const exArea = el('#exercise-area'); exArea.innerHTML='';
+  lessons.forEach(ls=>{
+    const d = document.createElement('div'); d.className='tile';
+    d.innerHTML = `<strong>${ls.title}</strong><div class="muted">${ls.body||''}</div>`;
+    d.onclick = ()=>openLesson(ls.id);
+    exArea.appendChild(d);
+  });
+  el('#close-lesson').onclick = ()=>{ area.hidden=true; };
+  showView('lessons');
+}
+
+/* Open lesson by id (continue) */
+function openLessonById(lessonId){
+  const ls = data.lessons.find(l=>l.id===lessonId);
+  if (!ls) return alert('Lección no encontrada');
+  openLesson(ls.id);
+}
+
+/* render single lesson and load exercises sequentially */
+function openLesson(lessonId){
+  const lesson = data.lessons.find(l=>l.id===lessonId);
+  if (!lesson) return;
+  el('#lesson-area').hidden=false;
+  el('#lesson-title').textContent = lesson.title;
+  el('#lesson-desc').textContent = lesson.body || '';
+  state.currentLesson = lesson;
+  // store last lesson
+  if (state.currentUser){
+    const u = data.users[state.currentUser];
+    u.lastLessonId = lesson.id; u.lastLessonTitle = lesson.title; saveData(data); renderSideNav();
+  }
+  // load exercises
+  const exs = data.exercises.filter(e=>e.lessonId===lesson.id);
+  if (exs.length===0){
+    el('#exercise-area').innerHTML = '<div class="muted">No hay ejercicios en esta lección.</div>';
+    return;
+  }
+  state.sessionExerciseIndex=0;
+  renderExercise(exs[state.sessionExerciseIndex], exs);
+}
+
+/* render exercise */
+function renderExercise(ex, list){
+  const area = el('#exercise-area'); area.innerHTML='';
+  const q = document.createElement('div'); q.className='exercise-question'; q.textContent = ex.prompt;
+  area.appendChild(q);
+  const opts = document.createElement('div'); opts.className='options';
+  if (ex.type === 'mcq'){
+    ex.options.forEach((o,i)=>{
+      const btn = document.createElement('div'); btn.className='option'; btn.textContent = o;
+      btn.onclick = async ()=>{
+        const correct = (i === ex.correctIndex);
+        markOption(btn, correct);
+        await afterAnswer(correct, ex);
+        // next
+        setTimeout(()=> nextExercise(list),800);
+      };
+      opts.appendChild(btn);
+    });
+  } else if (ex.type === 'text'){
+    const inp = document.createElement('input'); inp.placeholder='Escriba su respuesta';
+    const ok = document.createElement('button'); ok.className='btn btn-primary'; ok.textContent='Enviar';
+    ok.onclick = async ()=>{
+      const ans = inp.value.trim();
+      const correct = ex.answer && ans.toLowerCase()===ex.answer.toLowerCase();
+      markOption(inp, correct);
+      await afterAnswer(correct, ex);
+      setTimeout(()=> nextExercise(list),800);
+    };
+    opts.appendChild(inp); opts.appendChild(ok);
+  } else if (ex.type === 'listen'){
+    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Reproducir audio';
+    btn.onclick = ()=> speak(ex.prompt);
+    const inp = document.createElement('input'); inp.placeholder='Escriba lo que escuchó';
+    const ok = document.createElement('button'); ok.className='btn btn-primary'; ok.textContent='Enviar';
+    ok.onclick = async ()=>{
+      const correct = ex.answer && inp.value.trim().toLowerCase()===ex.answer.toLowerCase();
+      await afterAnswer(correct, ex);
+      setTimeout(()=> nextExercise(list),800);
+    };
+    opts.appendChild(btn); opts.appendChild(inp); opts.appendChild(ok);
+  }
+  area.appendChild(opts);
+}
+
+/* mark option */
+function markOption(elm, correct){
+  if (elm.classList.contains('option')){
+    if (correct) elm.classList.add('correct'); else elm.classList.add('wrong');
+  }
+}
+
+/* afterAnswer: update user XP/progress */
+async function afterAnswer(correct, ex){
+  if (!state.currentUser) { alert('Inicie sesión para guardar progreso'); return; }
+  const u = data.users[state.currentUser];
+  const xp = ex.xp || (correct?10:0);
+  if (correct){
+    u.xp = (u.xp||0) + xp;
+    // level up every 100 xp
+    if (u.xp >= u.level*100){ u.level = u.level + 1; alert('¡Subió de nivel!'); }
+    u.streak = (u.streak||0) + 1;
+    // mark completed
+    u.completed = u.completed || [];
+    if (!u.completed.includes(state.currentLesson.id)) u.completed.push(state.currentLesson.id);
+  } else {
+    // penalizar leve
+    u.xp = Math.max(0, (u.xp||0) - 2);
+    u.streak = 0;
+  }
+  // save result
+  data.users[state.currentUser] = u;
+  data.results[state.currentUser] = data.results[state.currentUser] || [];
+  data.results[state.currentUser].push({ exerciseId: ex.id, correct, at:Date.now() });
+  saveData(data);
+  renderSideNav();
+}
+
+/* nextExercise */
+function nextExercise(list){
+  state.sessionExerciseIndex++;
+  if (state.sessionExerciseIndex < list.length){
+    renderExercise(list[state.sessionExerciseIndex], list);
+  } else {
+    el('#exercise-area').innerHTML = '<div class="muted">Lección completa 🎉</div>';
+  }
+}
+
+/* =========================
+   Dictionary
+   ========================= */
+function renderDictionary(){
+  const list = el('#dict-list'); list.innerHTML='';
+  data.dictionary.forEach(w=>{
+    const div = document.createElement('div'); div.className='dictionary-item';
+    div.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
+    const play = document.createElement('button'); play.className='small'; play.textContent='🔊';
+    play.onclick = ()=> speak(w.wayu);
+    div.appendChild(play);
+    list.appendChild(div);
+  });
+  el('#dict-search').oninput = ()=>{
+    const q = el('#dict-search').value.trim().toLowerCase();
+    list.innerHTML=''; data.dictionary.filter(d=>!q || d.spanish.toLowerCase().includes(q) || d.wayu.toLowerCase().includes(q)).forEach(w=>{
+      const div = document.createElement('div'); div.className='dictionary-item';
+      div.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
+      const play = document.createElement('button'); play.className='small'; play.textContent='🔊';
+      play.onclick = ()=> speak(w.wayu);
+      div.appendChild(play);
+      list.appendChild(div);
+    });
+  };
+}
+
+/* =========================
+   Admin creation
+   ========================= */
+el('#create-level').onclick = ()=>{
+  if (!checkAdmin()) return;
+  const name = el('#new-level-name').value.trim(), desc = el('#new-level-desc').value.trim();
+  if (!name) return alert('Nombre requerido');
+  data.levels.push({ id: genId(), name, desc }); saveData(data);
+  el('#new-level-name').value=''; el('#new-level-desc').value='';
+  renderLevels(); renderAdminLevels();
+};
+
+el('#create-lesson').onclick = ()=>{
+  if (!checkAdmin()) return;
+  const levelId = el('#sel-level').value; const title=el('#new-lesson-title').value.trim(), body=el('#new-lesson-body').value.trim();
+  if (!levelId || !title) return alert('Seleccione nivel y título');
+  data.lessons.push({ id: genId(), levelId, title, body }); saveData(data);
+  el('#new-lesson-title').value=''; el('#new-lesson-body').value='';
+  alert('Lección creada');
+  renderLevels();
+};
+
+el('#create-word').onclick = ()=>{
+  if (!checkAdmin()) return;
+  const es=el('#dict-es').value.trim(), wy=el('#dict-wy').value.trim();
+  if (!es||!wy) return alert('Complete campos');
+  data.dictionary.push({ id: genId(), spanish:es, wayu:wy }); saveData(data); el('#dict-es').value=''; el('#dict-wy').value=''; renderDictionary();
+};
+
+/* populate level selector for admin */
+function renderAdminLevels(){
+  const sel = el('#sel-level'); sel.innerHTML='';
+  data.levels.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.name; sel.appendChild(o); });
+}
+
+/* checkAdmin */
+function checkAdmin(){
+  if (!state.currentUser) return alert('Inicie sesión como admin');
+  const u=data.users[state.currentUser];
+  if (!u || !u.isAdmin) return alert('Acceso restringido: administrador');
+  return true;
+}
+
+/* =========================
+   Profile
+   ========================= */
+function renderProfile(){
+  el('#profile-name').value = state.currentUser ? data.users[state.currentUser].username : '';
+  el('#profile-initials').value = state.currentUser ? (data.users[state.currentUser].initials||'') : '';
+  el('#save-profile').onclick = ()=>{
+    if (!state.currentUser) return alert('Inicie sesión primero');
+    const u = data.users[state.currentUser];
+    u.username = el('#profile-name').value.trim() || u.username;
+    u.initials = el('#profile-initials').value.trim() || initialsFrom(u.username);
+    data.users[state.currentUser] = u; saveData(data); renderSideNav(); alert('Perfil guardado');
+  };
+}
+
+/* =========================
+   Backup / Export / Import
+   ========================= */
+function exportImportDialog(){
+  const s = JSON.stringify(data, null, 2);
+  const ok = confirm('Exportar datos actuales a JSON y copiar al portapapeles? (Aceptar para copiar, Cancelar para importar desde prompt)');
+  if (ok){
+    navigator.clipboard.writeText(s).then(()=>alert('Datos copiados al portapapeles'));
+  } else {
+    const imported = prompt('Pegue aquí el JSON para importar:');
+    if (imported){
+      try { data = JSON.parse(imported); saveData(data); alert('Importado OK — recargando UI'); location.reload(); } catch(e){ alert('JSON inválido'); }
+    }
+  }
+}
+
+/* =========================
+   Helpers
+   ========================= */
+function genId(){ return 'id_'+Math.random().toString(36).slice(2,9); }
+function initialsFrom(name){ return name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase(); }
+function speak(text){
+  if (!text) return;
+  if ('speechSynthesis' in window){
+    const ut = new SpeechSynthesisUtterance(text);
+    ut.lang = 'es-ES';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(ut);
+  } else {
+    alert('Texto: ' + text);
+  }
+}
+
+/* =========================
+   Misc UI bindings + start
+   ========================= */
+el('#dict-list'); // ensure exists
+// navigation between main content via side nav
+document.addEventListener('click', (e)=>{
+  if (e.target.matches('nav.sidebar button')) return;
+});
+
+// allow direct sign-in if users exist
+document.addEventListener('click', (e)=>{
+  if (e.target.id === 'btn-login') {
+    const u = el('#login-user').value.trim();
+    signInLocal(u);
+  }
+});
+
+// initial render of dynamic areas
+renderLevels(); renderDictionary(); renderAdminLevels();
+
+/* expose simple global for debugging */
+window.WL = { data, saveData };
+
+/* end */
+</script>
 </body>
 </html>
 
