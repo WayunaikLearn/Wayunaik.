@@ -1,504 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WayunaikLearn — Taller práctico</title>
-  <meta name="description" content="WayunaikLearn — Taller práctico: dominio, arquitectura y flujo Git. Presentación lista para GitHub Pages." />
-  <link rel="icon" href="data:,">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WayunaikLearn | Aprende Wayuunaiki</title>
   <style>
-    /* =========================
-       Paleta "Cultura viva"
-       ========================= */
-    :root{
-      --bg: #F5E6CC;           /* Beige arena - fondo principal */
-      --accent: #C14953;       /* Rojo terracota - acentos / CTA */
-      --primary: #0A3D62;      /* Azul petróleo - títulos / highlights */
-      --mint: #A3D2CA;         /* Verde menta suave - botones secundarios */
-      --text: #2B2B2B;         /* Gris oscuro - texto principal */
-      --muted: #6B6B6B;        /* Texto secundario */
-      --card: rgba(255,255,255,0.85);
-      --glass: rgba(255,255,255,0.64);
+    :root {
+      --azul: #003f5c;
+      --beige: #f5f3ef;
+      --dorado: #d4a017;
+      --gris: #6e6e6e;
+      --verde: #00b894;
     }
 
-    /* Reset y tipografía */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, var(--bg) 0%, #FFF9F0 100%);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.5;
-      padding-bottom:60px;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--beige);
+      color: var(--azul);
     }
 
-    /* Contenedor */
-    .container{
-      max-width:1100px;
-      margin:32px auto;
-      padding:28px;
-    }
-
-    /* Header / Hero */
-    header{
-      display:flex;
-      gap:20px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:20px;
-    }
-    .brand{
-      display:flex;
-      gap:18px;
-      align-items:center;
-    }
-    .logo{
-      width:64px;
-      height:64px;
-      border-radius:12px;
-      background: linear-gradient(135deg,var(--primary),var(--accent));
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    header {
+      background-color: var(--azul);
       color: white;
-      font-weight:700;
-      box-shadow: 0 6px 18px rgba(10,61,98,0.14);
+      padding: 15px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
-    .brand h1{margin:0;font-size:20px;color:var(--primary)}
-    .brand p{margin:0;font-size:13px;color:var(--muted)}
 
-    nav{display:flex;gap:8px;flex-wrap:wrap}
-    .btn {
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .login, .main {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--gris);
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--dorado);
+      color: white;
       border: none;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:600;
-      cursor:pointer;
-      transition:transform .12s ease, box-shadow .12s ease;
-      font-size:14px;
-      background:var(--mint);
-      color:var(--text);
-      box-shadow: 0 4px 12px rgba(163,210,202,0.18);
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn-outline{
-      background:transparent;
-      border:2px solid rgba(11,61,98,0.08);
-      color:var(--primary);
-    }
-    .cta{
-      background: linear-gradient(90deg,var(--primary),var(--accent));
-      color:#fff;
-      box-shadow: 0 8px 28px rgba(193,73,83,0.14);
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    /* Hero card */
-    .hero{
-      background:var(--card);
-      border-radius:14px;
-      padding:22px;
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:18px;
-      align-items:center;
-      box-shadow: 0 10px 30px rgba(10,61,98,0.05);
-    }
-    .hero h2{margin:0;color:var(--primary)}
-    .hero p{margin:6px 0 0;color:var(--muted)}
-    .meta{font-size:13px;color:var(--muted); margin-top:8px;}
-    .badge{
-      background:linear-gradient(90deg,var(--accent),var(--primary));
-      color:#fff;
-      padding:8px 12px;
-      border-radius:10px;
-      font-weight:700;
-      display:inline-block;
+    button:hover {
+      background-color: var(--verde);
     }
 
-    /* Grid de secciones */
-    main{margin-top:20px; display:grid; gap:18px}
-    section.card{
-      background:var(--glass);
-      padding:18px;
-      border-radius:12px;
-      box-shadow: 0 8px 22px rgba(11,61,98,0.04);
-    }
-    section.card h3{margin-top:0;color:var(--primary)}
-    .muted{color:var(--muted)}
-
-    /* Terminología list */
-    .term-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-    .term{
-      background: rgba(255,255,255,0.85);
-      padding:10px;border-radius:10px;border-left:4px solid var(--accent);
-    }
-    .term h4{margin:0 0 6px 0;font-size:15px}
-    .term p{margin:0;color:var(--muted);font-size:13px}
-
-    pre.ascii{
-      background:#0A2A3A;
-      color:#E0F2F1;
-      padding:12px;
-      border-radius:8px;
-      overflow:auto;
-      font-family: "Courier New", Courier, monospace;
-      font-size:12px;
-      line-height:1.25;
-      margin:10px 0;
+    nav {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      background: var(--azul);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
-    /* Buttons small */
-    .small{
-      padding:8px 10px;font-size:13px;border-radius:8px;
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 15px;
+      flex: 1;
+      font-size: 1rem;
     }
 
-    /* Responsive columns */
-    .two-cols{
-      display:grid;
-      grid-template-columns: 1fr 380px;
-      gap:16px;
-    }
-    @media (max-width:880px){
-      .hero{grid-template-columns:1fr}
-      .two-cols{grid-template-columns:1fr}
-      header{flex-direction:column;align-items:flex-start;gap:12px}
+    nav button:hover {
+      background-color: var(--dorado);
     }
 
-    /* Footer */
-    footer{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      background:rgba(255,255,255,0.95);
-      border-top:1px solid rgba(10,61,98,0.04);
-      display:flex;justify-content:center;align-items:center;padding:10px 12px;
-      font-size:13px;color:var(--muted);
-      backdrop-filter: blur(6px);
+    section {
+      margin-top: 20px;
     }
 
-    /* Utility */
-    .kbd{font-family:monospace;background:#fff;padding:3px 6px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)}
-    a.link{color:var(--primary);text-decoration:none;font-weight:600}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-    code.inline{background:#fff;padding:2px 6px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)}
+    .lesson {
+      background-color: white;
+      border-left: 5px solid var(--dorado);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    .dictionary-item {
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    audio {
+      height: 30px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--gris);
+    }
   </style>
 </head>
 <body>
+  <header>WayunaikLearn — Aprende Wayuunaiki</header>
+
   <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">WL</div>
-        <div>
-          <h1>WayunaikLearn</h1>
-          <p>Aplicación educativa para aprender Wayuunaiki — Taller práctico</p>
-        </div>
-      </div>
-
-      <nav>
-        <button class="btn" onclick="document.getElementById('desc').scrollIntoView({behavior:'smooth'})">Ver resumen</button>
-        <button class="btn btn-outline" onclick="document.getElementById('terms').scrollIntoView({behavior:'smooth'})">Lenguaje ubicuo</button>
-        <button class="btn" onclick="document.getElementById('architecture').scrollIntoView({behavior:'smooth'})">Arquitectura</button>
-        <button class="btn cta" onclick="document.getElementById('deliverables').scrollIntoView({behavior:'smooth'})">Entregables</button>
-      </nav>
-    </header>
-
-    <div class="hero">
-      <div>
-        <h2>Taller práctico — Sistema: WayunaikLearn</h2>
-        <p class="muted">Documento guía listo para presentar: dominio, términos, diagramas ASCII, arquitectura conceptual y flujo Git.</p>
-        <div class="meta">Autor: <strong>Juan Manuel Correa Quiceno</strong> · Fecha: <span id="date"></span></div>
-      </div>
-      <div style="text-align:right">
-        <div class="badge">Versión de taller • Entregable</div>
-        <div style="height:10px"></div>
-        <div class="note">Paleta seleccionada: <strong>Cultura viva</strong></div>
-      </div>
+    <!-- LOGIN -->
+    <div id="loginScreen" class="login active">
+      <h2>Iniciar Sesión</h2>
+      <input type="text" id="user" placeholder="Usuario">
+      <input type="password" id="pass" placeholder="Contraseña">
+      <button onclick="login()">Ingresar</button>
+      <p style="text-align:center;">¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate</a></p>
     </div>
 
-    <main>
+    <!-- REGISTRO -->
+    <div id="registerScreen" class="login">
+      <h2>Registrarse</h2>
+      <input type="text" id="newUser" placeholder="Usuario nuevo">
+      <input type="password" id="newPass" placeholder="Contraseña">
+      <button onclick="register()">Crear cuenta</button>
+      <p style="text-align:center;"><a href="#" onclick="showLogin()">Volver al inicio</a></p>
+    </div>
 
-      <!-- 1. Nombre y descripción -->
-      <section id="desc" class="card">
-        <h3>1. Nombre del sistema</h3>
-        <p><strong>WayunaikLearn</strong> — Aplicación educativa para aprender Wayuunaiki (idioma wayúu).</p>
+    <!-- APP PRINCIPAL -->
+    <div id="mainApp" class="main">
+      <nav>
+        <button onclick="showTab('lessons')">Lecciones</button>
+        <button onclick="showTab('dictionary')">Diccionario</button>
+        <button onclick="showTab('progress')">Progreso</button>
+      </nav>
 
-        <h3 style="margin-top:14px">2. Descripción del dominio</h3>
-        <p>WayunaikLearn permite a usuarios registrarse, avanzar por niveles de aprendizaje, practicar con ejercicios y consultar un diccionario bilingüe (español ↔ Wayunaiki) con audios. Los administradores gestionan lecciones, ejercicios, categorías y audios para mantener actualizado el contenido y monitorear el progreso del aprendizaje.</p>
-      </section>
-
-      <!-- 3. Lenguaje ubicuo -->
-      <section id="terms" class="card">
-        <h3>3. Lenguaje ubicuo — términos clave</h3>
-        <p class="muted">Términos principales del dominio (definición breve). Útiles para diseño de historias de usuario, APIs y documentación.</p>
-        <div class="term-list" style="margin-top:12px">
-          <div class="term"><h4>Usuario</h4><p>Persona registrada que usa la app; posee progreso y niveles.</p></div>
-          <div class="term"><h4>Administrador</h4><p>Usuario con permisos para crear/editar lecciones, ejercicios y diccionario.</p></div>
-          <div class="term"><h4>Lección</h4><p>Conjunto temático de contenidos y ejercicios.</p></div>
-          <div class="term"><h4>Ejercicio</h4><p>Actividad evaluable dentro de una lección (enunciado, respuesta, dificultad).</p></div>
-          <div class="term"><h4>Diccionario</h4><p>Colección de entradas palabra (español ↔ Wayunaiki) con audios.</p></div>
-          <div class="term"><h4>Entrada</h4><p>Elemento del diccionario: palabra y su traducción, puede tener audio.</p></div>
-          <div class="term"><h4>Audio</h4><p>Archivo de sonido asociado a una entrada o lección.</p></div>
-          <div class="term"><h4>Nivel</h4><p>Agrupación progresiva de lecciones con requisitos y puntaje.</p></div>
-          <div class="term"><h4>Progreso</h4><p>Porcentaje, racha y logros del usuario.</p></div>
-          <div class="term"><h4>Categoría</h4><p>Clasificación temática de lecciones (ej.: Saludos, Familia).</p></div>
-          <div class="term"><h4>Racha</h4><p>Días consecutivos con actividad en la app.</p></div>
-          <div class="term"><h4>Resultado</h4><p>Evaluación de ejercicio (correcto / incorrecto).</p></div>
-          <div class="term"><h4>Sesión</h4><p>Uso continuo del usuario en la app.</p></div>
-          <div class="term"><h4>Recurso</h4><p>Elementos multimedia vinculados a lecciones o diccionario.</p></div>
+      <!-- LECCIONES -->
+      <section id="lessons" class="tab active">
+        <h2>Lecciones de Wayuunaiki</h2>
+        <div class="lesson">
+          <h3>1. Saludos básicos</h3>
+          <p>Aprende a saludar en Wayuunaiki.</p>
+          <button onclick="startLesson('Saludos básicos')">Iniciar</button>
+        </div>
+        <div class="lesson">
+          <h3>2. Familia</h3>
+          <p>Palabras para referirte a los miembros de la familia.</p>
+          <button onclick="startLesson('Familia')">Iniciar</button>
+        </div>
+        <div class="lesson">
+          <h3>3. Naturaleza</h3>
+          <p>Aprende vocabulario de animales y plantas.</p>
+          <button onclick="startLesson('Naturaleza')">Iniciar</button>
         </div>
       </section>
 
-      <!-- 4. Contextos delimitados -->
-      <section id="contexts" class="card">
-        <h3>4. Contextos delimitados (Bounded Contexts)</h3>
-        <p class="muted">Agrupación de términos en subdominios para evitar ambigüedad.</p>
-
-        <ul>
-          <li><strong>Autenticación y Usuario:</strong> Usuario, Administrador, Sesión, Estado de usuario.</li>
-          <li><strong>Contenido pedagógico (Lecciones):</strong> Lección, Ejercicio, Nivel, Resultado, Progreso, Racha, Recurso.</li>
-          <li><strong>Diccionario:</strong> Diccionario, Entrada, Audio.</li>
-          <li><strong>Administración / Gestión:</strong> Administrador (gestión), Categoría, Versionado de contenidos.</li>
-        </ul>
-
-        <h4>Diagrama de contextos (ASCII)</h4>
-        <pre class="ascii" id="ascii-context">
-+---------------------+     +--------------------+
-| Autenticación /     |     | Contenido Pedagógico|
-| Usuario             |     | (Lecciones & Niveles)|
-|  - Usuario          |<--->|  - Lección          |
-|  - Administrador    |     |  - Ejercicio        |
-|  - Sesión           |     |  - Nivel            |
-+---------------------+     |  - Progreso         |
-                            +--------------------+
-              ^
-              |
-              | interacts (as actor)
-              |
-+---------------------+     +--------------------+
-| Diccionario         |     | Administración     |
-|  - Entrada          |     |  - Categoría       |
-|  - Audio            |     |  - Gestión contenidos|
-+---------------------+     +--------------------+
-        </pre>
-        <div style="margin-top:8px">
-          <button class="btn small" onclick="copyToClipboard('ascii-context')">Copiar ASCII</button>
-          <span class="note">Explicación: la flecha Usuario ↔ Contenido indica que los usuarios realizan ejercicios y actualizan su progreso.</span>
+      <!-- DICCIONARIO -->
+      <section id="dictionary" class="tab" style="display:none;">
+        <h2>Diccionario Español ↔ Wayuunaiki</h2>
+        <div class="dictionary-item">
+          <span><b>Hola</b> — <i>Ashajawaa</i></span>
+          <audio controls src=""></audio>
+        </div>
+        <div class="dictionary-item">
+          <span><b>Madre</b> — <i>Piichi</i></span>
+          <audio controls src=""></audio>
+        </div>
+        <div class="dictionary-item">
+          <span><b>Agua</b> — <i>Wüin</i></span>
+          <audio controls src=""></audio>
         </div>
       </section>
 
-      <!-- 5. Arquitectura conceptual -->
-      <section id="architecture" class="card two-cols">
-        <div>
-          <h3>5. Arquitectura conceptual (capas y elementos)</h3>
-          <p class="muted">División en tres capas: Dominio, Aplicación, Infraestructura. A continuación se describen entidades y casos de uso principales.</p>
-
-          <h4>Capa de Dominio — Entidades y objetos de valor</h4>
-          <ul>
-            <li><strong>Usuario</strong> (id, nombre, correo, contraseñaHash, progreso)</li>
-            <li><strong>Administrador</strong> (hereda Usuario, permisos)</li>
-            <li><strong>Lección</strong> (id, título, descripción, categoría, listaEjercicios)</li>
-            <li><strong>Ejercicio</strong> (id, tipo, dificultad, enunciado, respuestaEsperada)</li>
-            <li><strong>Nivel</strong> (id, nombre, requisitos, puntajeMinimo, logros)</li>
-            <li><strong>Diccionario / Entrada</strong> (palabraEsp, palabraWayu, audioId)</li>
-            <li><strong>Audio</strong> (id, ruta, duración)</li>
-            <li><strong>Progreso</strong> (porcentaje, racha, logros)</li>
-            <li><strong>ResultadoEjercicio</strong> (usuarioId, ejercicioId, correcto, fecha)</li>
-          </ul>
-
-          <h4>Capa de Aplicación — Casos de uso</h4>
-          <ul>
-            <li>RegistrarUsuario(datos)</li>
-            <li>IniciarSesion(credenciales)</li>
-            <li>CrearLeccion / EditarLeccion / EliminarLeccion (Admin)</li>
-            <li>PublicarEjercicio(lección)</li>
-            <li>RealizarEjercicio(usuario, ejercicio) → Actualiza Progreso, Racha</li>
-            <li>GenerarReporteProgreso(usuario)</li>
-            <li>BuscarEntradaDiccionario(palabra)</li>
-            <li>ReproducirAudio(audioId)</li>
-            <li>AsignarNivel(usuario)</li>
-          </ul>
-
-          <h4>Infraestructura — Implementaciones</h4>
-          <ul>
-            <li>DB relacional / NoSQL (usuarios, lecciones, ejercicios, niveles, entradas, audios, progresos)</li>
-            <li>Almacenamiento de audios (S3 / bucket)</li>
-            <li>API REST / GraphQL</li>
-            <li>Auth (JWT / OAuth)</li>
-            <li>Notificaciones (push / email)</li>
-            <li>CI/CD + Repo Git (runners)</li>
-          </ul>
-        </div>
-
-        <aside class="card" style="background:linear-gradient(180deg,rgba(163,210,202,0.18),rgba(255,255,255,0.5));">
-          <h4>Mapeo rápido</h4>
-          <p class="muted">Reglas de colocación:</p>
-          <ul>
-            <li>Reglas de negocio complejas → Dominio</li>
-            <li>Flujos / orquestadores → Aplicación</li>
-            <li>Persistencia / almacenamiento → Infraestructura</li>
-          </ul>
-
-          <h4 style="margin-top:10px">Diagrama sugerido (texto)</h4>
-          <pre class="ascii">
-[Frontend] -> [API Gateway] -> [Aplicación]
-                       |
-            ----------------------------
-            |            |             |
-         [Dominio]  [Persistencia]  [Almacenamiento]
-          (Servicios)   (DB)           (S3)
-          </pre>
-          <div class="note">Si desea, puedo generar PlantUML con este diagrama listo para compilar.</div>
-        </aside>
+      <!-- PROGRESO -->
+      <section id="progress" class="tab" style="display:none;">
+        <h2>Tu progreso</h2>
+        <p><b>Nivel actual:</b> Principiante</p>
+        <p><b>Lecciones completadas:</b> 2 / 10</p>
+        <p><b>Racha actual:</b> 🔥 3 días consecutivos</p>
       </section>
-
-      <!-- 6. Estándares del equipo -->
-      <section id="standards" class="card">
-        <h3>6. Estándares del equipo (reglas)</h3>
-        <ol>
-          <li><strong>Nomenclatura:</strong> Clases en PascalCase; variables/funciones en camelCase; endpoints REST en plural (GET /usuarios).</li>
-          <li><strong>Ramas y commits:</strong> main, develop, feature/..., fix/..., release/.... Mensajes con prefijo: <code>feat:</code>, <code>fix:</code>.</li>
-          <li><strong>Revisión de código:</strong> Merge a develop requiere PR + al menos 1 aprobación y pruebas automáticas.</li>
-          <li><strong>Documentación mínima:</strong> README corto por endpoint/módulo; actualizar diagramas ER en migraciones.</li>
-          <li><strong>Prácticas prohibidas:</strong> No mergear a main/develop sin PR; evitar hardcodear credenciales.</li>
-        </ol>
-      </section>
-
-      <!-- 7. Flujo de trabajo Git -->
-      <section id="gitflow" class="card">
-        <h3>7. Flujo de trabajo en equipo (simulación Git)</h3>
-        <p class="muted">Descripción breve del flujo y proceso recomendado.</p>
-
-        <h4>Diagrama ASCII del flujo</h4>
-        <pre class="ascii" id="ascii-git">
-main  --------------------o--------------------> (production tags)
-                         /
-develop  ---o---o---o---/---o---o---o---o---     (integración continua)
-           \   \   \   \   \   \   \   \
-feature/ejercicios  feature/diccionario  feature/progreso ...
- \ (PR) -> Merge to develop after review
-fix/ajuste-validacion -> PR -> develop
-release/1.0 -> QA -> merge into main (tag v1.0) & deploy
-        </pre>
-        <div style="margin-top:8px">
-          <button class="btn small" onclick="copyToClipboard('ascii-git')">Copiar flujo ASCII</button>
-          <p class="note">Proceso recomendado: crear feature/<nombre> desde develop, desarrollar, PR, aprobar, merge a develop, pruebas, crear release y merge a main con tag.</p>
-        </div>
-      </section>
-
-      <!-- 8. Entregables -->
-      <section id="deliverables" class="card">
-        <h3>8. Entregables para la exposición</h3>
-        <ol>
-          <li>Portada: Nombre del sistema, integrantes (3–5), fecha.</li>
-          <li>Descripción del dominio (3–5 líneas).</li>
-          <li>Lenguaje ubicuo (lista de términos con definiciones).</li>
-          <li>Diagrama de contextos (ASCII o gráfico).</li>
-          <li>Diagrama de arquitectura (capas + elementos).</li>
-          <li>Estándares del equipo (las 5 reglas).</li>
-          <li>Flujo de versiones (diagrama ASCII + proceso).</li>
-          <li>Anexo: ejemplos de endpoints y modelos de datos (opcional).</li>
-        </ol>
-
-        <div style="margin-top:12px">
-          <button class="btn cta" onclick="downloadHTML()">Descargar HTML</button>
-          <button class="btn" onclick="generatePlantUML()">Generar PlantUML (clases)</button>
-          <div class="note">Si desea, preparo también: endpoints REST, PlantUML listo, o las diapositivas en PDF/PowerPoint.</div>
-        </div>
-      </section>
-
-      <!-- Opcional: checklist -->
-      <section id="checklist" class="card">
-        <h3>9. Mini-checklist para la presentación</h3>
-        <ul>
-          <li>30–60 s: Nombre del sistema y propósito.</li>
-          <li>60–90 s: Mostrar lenguaje ubicuo.</li>
-          <li>90–120 s: Diagrama de contextos — responsabilidades.</li>
-          <li>120–180 s: Arquitectura — qué va en cada capa.</li>
-          <li>180–220 s: Estándares y flujo de versiones.</li>
-          <li>220–240 s: Cierre, próximos pasos y preguntas.</li>
-        </ul>
-      </section>
-
-    </main>
-
+    </div>
   </div>
 
   <footer>
-    WayunaikLearn • Taller práctico — Página generada automáticamente · © <span id="year"></span> · Hecho para presentar.
+    © 2025 WayunaikLearn | Desarrollado por CorreQ
   </footer>
 
   <script>
-    // Fechas
-    document.getElementById('date').textContent = new Date().toLocaleDateString('es-CO', { year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Copiar contenido de pre a portapapeles
-    function copyToClipboard(id){
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text).then(()=>{
-        alert('Texto copiado al portapapeles.');
-      }).catch(()=>alert('No se pudo copiar. Por favor copie manualmente.'));
+    function showRegister() {
+      document.getElementById("loginScreen").classList.remove("active");
+      document.getElementById("registerScreen").classList.add("active");
     }
 
-    // Descargar la propia página como archivo HTML
-    function downloadHTML(){
-      const html = '<!doctype html>\\n' + document.documentElement.outerHTML;
-      const blob = new Blob([html], {type:'text/html;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'WayunaikLearn_Taller.html';
-      a.click();
-      URL.revokeObjectURL(url);
+    function showLogin() {
+      document.getElementById("registerScreen").classList.remove("active");
+      document.getElementById("loginScreen").classList.add("active");
     }
 
-    // Generar PlantUML básico (clases) — abre en nueva pestaña con contenido en texto
-    function generatePlantUML(){
-      const plantuml = `@startuml
-class Usuario {
-  +id
-  +nombre
-  +correo
-  +contraseñaHash
-  +progreso
-}
-class Administrador {
-  +permisos
-}
-class Leccion {
-  +id
-  +titulo
-  +descripcion
-}
-class Ejercicio {
-  +id
-  +tipo
-  +enunciado
-}
-class Nivel {
-  +id
-  +nombre
-}
-class Entrada {
-  +palabraEsp
-  +palabraWayu
-}
-Usuario <|-- Administrador
-Leccion "1" *-- "*" Ejercicio
-Leccion "*" -- "1" Nivel
-Entrada -- Audio
-@enduml`;
-      const w = window.open('', '_blank');
-      w.document.write('<pre>'+escapeHtml(plantuml)+'</pre>');
-      w.document.title = 'PlantUML - WayunaikLearn';
+    function login() {
+      const user = document.getElementById("user").value;
+      const pass = document.getElementById("pass").value;
+      if (user && pass) {
+        localStorage.setItem("wayunaik_user", user);
+        document.getElementById("loginScreen").classList.remove("active");
+        document.getElementById("mainApp").classList.add("active");
+      } else {
+        alert("Ingrese usuario y contraseña");
+      }
     }
 
-    function escapeHtml(s){
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function register() {
+      const newUser = document.getElementById("newUser").value;
+      const newPass = document.getElementById("newPass").value;
+      if (newUser && newPass) {
+        localStorage.setItem("wayunaik_user", newUser);
+        alert("Usuario registrado correctamente. Ahora puede iniciar sesión.");
+        showLogin();
+      } else {
+        alert("Complete todos los campos");
+      }
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
+      document.getElementById(tab).style.display = "block";
+    }
+
+    function startLesson(lesson) {
+      alert("Iniciando lección: " + lesson);
     }
   </script>
 </body>
 </html>
+
 
