@@ -3,148 +3,171 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>WayunaikLearn — Duolingo Lite (Wayuunaiki)</title>
-<link rel="icon" href="data:;">
+<title>WayunaikLearn — Aprende Wayuunaiki</title>
+
+<!-- Fuentes e iconos -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-hash" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <style>
-  /* --------- Paleta y reset --------- */
   :root{
-    --bg:#F5EDE6;       /* beige suave */
-    --primary:#0B8457;  /* verde tipo Duolingo */
-    --accent:#C14953;   /* terracota cultural */
-    --card:#FFFFFF;
+    --bg: #F6F2EC;            /* beige suave */
+    --primary: #19A974;      /* verde vibrante (duolingo-like) */
+    --accent: #C14953;       /* terracota cultural (detalle) */
+    --card:#ffffff;
     --muted:#6B6B6B;
-    --glass: rgba(255,255,255,0.85);
-    --shadow: 0 10px 30px rgba(11,132,87,0.08);
+    --glass: rgba(255,255,255,0.86);
+    --glass-2: rgba(255,255,255,0.65);
+    --shadow: 0 12px 30px rgba(10,20,20,0.06);
+    --radius:14px;
   }
+
   *{box-sizing:border-box}
+  html,body{height:100%}
   body{
-    margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: linear-gradient(180deg,var(--bg), #FFFDF9);
+    margin:0;
+    font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #FCF8F4 0%, var(--bg) 100%);
     color:#123;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
-  .wrap{max-width:1100px;margin:24px auto;padding:18px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .brand{display:flex;align-items:center;gap:12px}
+
+  /* Layout */
+  .wrap{max-width:1200px;margin:22px auto;padding:18px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px}
+  .brand{display:flex;gap:12px;align-items:center}
   .logo{
-    width:56px;height:56px;border-radius:12px;
-    background:linear-gradient(135deg,var(--primary),var(--accent));
-    display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;
+    width:64px;height:64px;border-radius:16px;
+    background: linear-gradient(135deg,var(--primary),var(--accent));
+    color:white; font-weight:800; display:flex;align-items:center;justify-content:center;
     box-shadow:var(--shadow);
+    font-size:20px;
   }
-  h1{margin:0;font-size:18px;color:var(--primary)}
+  h1{margin:0;font-size:20px;color:var(--primary)}
   p.lead{margin:0;color:var(--muted);font-size:13px}
 
-  /* layout */
-  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:18px}
-  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  /* Top actions */
+  #top-actions{display:flex;gap:10px;align-items:center}
+  .btn{padding:8px 12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  .btn-primary{background:linear-gradient(90deg,var(--primary),#2fd191);color:#fff;box-shadow:0 10px 24px rgba(25,169,116,0.12)}
+  .btn-ghost{background:transparent;border:1px solid rgba(25,169,116,0.12);color:var(--primary)}
 
-  /* side panel */
-  .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow)}
-  .user{
-    display:flex;gap:12px;align-items:center;margin-bottom:10px;
+  /* Main grid */
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:18px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card);
+    padding:16px;border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    position:relative;
   }
+
+  /* User panel */
+  .user{display:flex;gap:12px;align-items:center}
   .avatar{
-    width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#fff1e6,#e6fff2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);
-    font-size:18px;border:2px solid rgba(0,0,0,0.04)
+    width:64px;height:64px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:var(--primary);background:linear-gradient(180deg,#fff,#f7fff7);
+    border:1px solid rgba(0,0,0,0.04);
+    font-size:18px;
   }
-  .stats{display:flex;flex-direction:column;gap:6px}
-  .progress-bar{height:10px;background:linear-gradient(90deg,#e9f7f0,#f3f9f6);border-radius:8px;overflow:hidden}
+  .stats{flex:1}
+  .progress-bar{height:10px;background:#f1fbf6;border-radius:10px;overflow:hidden;margin-top:8px}
   .progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));width:0%}
 
-  .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
-  .btn-primary{background:linear-gradient(90deg,var(--primary),#0fb97a);color:white;box-shadow:0 6px 18px rgba(11,132,87,0.14)}
-  .btn-ghost{background:transparent;border:1px solid rgba(11,132,87,0.12);color:var(--primary)}
-  .muted{color:var(--muted);font-size:13px}
+  nav.sidebar{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+  nav.sidebar button{background:transparent;border:none;text-align:left;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;color:#234}
+  nav.sidebar button.active{background:linear-gradient(90deg, rgba(25,169,116,0.09), rgba(193,73,83,0.02))}
 
-  nav.sidebar{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-  nav.sidebar button{background:transparent;border:none;text-align:left;padding:8px;border-radius:8px;cursor:pointer;font-weight:600;color:var(--primary)}
-  nav.sidebar button.active{background:linear-gradient(90deg, rgba(11,132,87,0.08), rgba(193,73,83,0.03));box-shadow:inset 0 1px 0 rgba(255,255,255,0.3)}
-
-  /* main content */
-  main{min-height:60vh}
-  .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow);margin-bottom:12px}
-  .center{display:flex;align-items:center;justify-content:center}
+  /* Main content */
+  main{min-height:64vh}
+  .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow);margin-bottom:12px}
+  .muted{color:var(--muted)}
   .flex{display:flex;gap:12px;align-items:center}
 
-  /* lesson tiles */
+  /* Lessons */
   .lesson-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-  .tile{background:linear-gradient(180deg,#fff,#fcfffb);padding:12px;border-radius:10px;border-left:6px solid var(--primary);cursor:pointer}
-  .tile.locked{opacity:0.5;filter:grayscale(20%);cursor:default;border-left-color:rgba(0,0,0,0.06)}
+  .tile{
+    border-radius:12px;padding:12px;background:linear-gradient(180deg,#fff,#fbfffb);
+    border-left:6px solid var(--primary);
+    box-shadow: 0 8px 20px rgba(10,20,20,0.03);cursor:pointer;
+    transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .tile:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(10,20,20,0.06)}
+  .tile.locked{opacity:0.5;filter:grayscale(20%);cursor:default;border-left-color:#ddd}
 
-  /* exercise */
-  .exercise-question{font-size:18px;margin-bottom:10px}
-  .options{display:grid;gap:8px}
-  .option{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:#fbfff7}
-  .option.correct{background:linear-gradient(90deg,#dff4e6,#c7f0da);border-color:rgba(11,132,87,0.2)}
-  .option.wrong{background:linear-gradient(90deg,#ffdede,#ffe8e8);border-color:rgba(193,73,83,0.15)}
+  /* Exercise area */
+  .exercise {padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fcfffb);box-shadow:0 8px 20px rgba(10,20,20,0.03)}
+  .question{font-size:18px;margin-bottom:10px}
+  .options{display:grid;gap:10px}
+  .option{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:#fff}
+  .option.correct{background:linear-gradient(90deg,#e7f9ef,#d8f2e3);border-color:rgba(25,169,116,0.12)}
+  .option.wrong{background:linear-gradient(90deg,#ffecec,#ffe0e0);border-color:rgba(193,73,83,0.12)}
 
-  .small{font-size:13px;padding:6px 8px;border-radius:8px}
+  /* Dictionary */
+  .dictionary-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfffd);margin-bottom:8px}
 
-  /* footer */
-  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+  /* Profile/Admin forms */
+  input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);margin-top:6px;font-size:14px}
+  textarea{resize:vertical}
 
-  /* animations */
-  .fade-in{animation:fade .28s ease}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
 
-  /* responsive */
+  /* small screens */
   @media (max-width:520px){
-    h1{font-size:16px}
-    .grid{gap:10px}
+    .logo{width:48px;height:48px;font-size:16px}
+    .avatar{width:56px;height:56px}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
     <div class="brand">
       <div class="logo">WL</div>
       <div>
         <h1>WayunaikLearn</h1>
-        <p class="lead">Aprende Wayuunaiki — Modo juego</p>
+        <p class="lead">Aprenda Wayuunaiki — aplicación gamificada y cultural</p>
       </div>
     </div>
 
     <div id="top-actions">
-      <!-- dynamic -->
+      <!-- botones dinámicos -->
     </div>
   </header>
 
   <div class="grid">
-    <!-- SIDE -->
-    <aside class="panel">
+    <!-- PANEL LATERAL -->
+    <aside class="panel" aria-label="Panel lateral">
       <div id="auth-area">
-        <!-- login/register rendered here -->
+        <!-- formulario de login/registro (renderizado por JS) -->
       </div>
 
       <div id="user-panel" style="display:none">
         <div class="user">
-          <div id="avatar" class="avatar">JM</div>
+          <div id="avatar" class="avatar">WL</div>
           <div class="stats">
-            <div id="welcome"><strong>Juan</strong></div>
-            <div class="muted" id="role">Usuario</div>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
-              <div style="flex:1">
-                <div style="font-size:12px" class="muted">Progreso</div>
-                <div class="progress-bar"><i id="progbar"></i></div>
-                <div style="font-size:12px" class="muted" id="xptext">XP: 0 · Nivel 1</div>
-              </div>
-            </div>
+            <div id="welcome"><strong>Bienvenido</strong></div>
+            <div id="role" class="muted">Usuario</div>
+            <div class="progress-bar"><i id="progbar"></i></div>
+            <div class="muted" style="font-size:13px;margin-top:6px" id="xptext">XP: 0 · Nivel 1</div>
           </div>
         </div>
 
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary" id="btn-continue">Continuar</button>
-          <button class="btn btn-ghost" id="btn-logout">Cerrar sesión</button>
+          <button class="btn btn-primary" id="btn-continue"><i class="fa-solid fa-play"></i> Continuar</button>
+          <button class="btn btn-ghost" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
         </div>
 
         <div style="margin-top:12px">
           <div class="muted">Racha</div>
-          <div style="font-size:20px;font-weight:800">🔥 <span id="streak">0</span> días</div>
+          <div style="font-weight:900;font-size:20px">🔥 <span id="streak">0</span> días</div>
         </div>
 
-        <nav class="sidebar" style="margin-top:12px">
+        <nav class="sidebar" aria-label="Navegación">
           <button class="active" data-view="dashboard">Dashboard</button>
           <button data-view="lessons">Lecciones</button>
           <button data-view="dictionary">Diccionario</button>
@@ -153,105 +176,95 @@
         </nav>
 
         <div style="margin-top:12px">
-          <button class="small" id="backup-btn">Exportar/Importar datos</button>
+          <button class="btn btn-ghost small" id="backup-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Exportar / Importar</button>
         </div>
       </div>
 
-      <div style="margin-top:12px" class="muted">WayunaikLearn • Demo local</div>
+      <div style="margin-top:12px" class="muted">WayunaikLearn • Demo local — CorreQ</div>
     </aside>
 
-    <!-- MAIN -->
+    <!-- CONTENIDO PRINCIPAL -->
     <main>
-      <!-- VISTAS -->
-      <div id="view-dashboard" class="card fade-in">
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="card" role="region" aria-label="Dashboard">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div>
             <h2 style="margin:0">Bienvenido a WayunaikLearn</h2>
-            <p class="muted" id="dash-sub">Practique diariamente y mantenga su racha.</p>
+            <p class="muted" id="dash-sub">Practique diariamente y avance con metas claras.</p>
           </div>
-          <div class="center">
-            <div style="text-align:right">
-              <div class="muted">Meta diaria</div>
-              <div style="font-weight:800">20 XP / día</div>
-            </div>
+          <div style="text-align:right">
+            <div class="muted">Meta diaria</div>
+            <div style="font-weight:900;font-size:20px">20 XP</div>
           </div>
         </div>
 
         <div style="margin-top:14px" class="card">
-          <h3 style="margin:0 0 8px 0">Progreso rápido</h3>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <div style="min-width:180px">
-              <div class="muted">Nivel</div>
-              <div style="font-size:22px;font-weight:800" id="dash-level">1</div>
-            </div>
-            <div style="min-width:220px">
-              <div class="muted">XP total</div>
-              <div style="font-size:22px;font-weight:800" id="dash-xp">0</div>
-            </div>
-            <div style="min-width:220px">
-              <div class="muted">Lecciones completadas</div>
-              <div style="font-size:22px;font-weight:800" id="dash-completed">0</div>
-            </div>
+          <div style="display:flex;gap:18px;flex-wrap:wrap">
+            <div><div class="muted">Nivel</div><div style="font-weight:900;font-size:20px" id="dash-level">1</div></div>
+            <div><div class="muted">XP</div><div style="font-weight:900;font-size:20px" id="dash-xp">0</div></div>
+            <div><div class="muted">Lecciones completadas</div><div style="font-weight:900;font-size:20px" id="dash-completed">0</div></div>
           </div>
         </div>
 
         <div style="margin-top:12px" class="card">
-          <h3 style="margin:0 0 8px 0">Continuar con la lección</h3>
-          <div id="continue-area" class="muted">No hay lecciones recientes. Inicie una lección desde el panel de Lecciones.</div>
+          <h3 style="margin:0 0 10px 0">Continuar</h3>
+          <div id="continue-area" class="muted">Inicie una lección desde el panel de Lecciones.</div>
         </div>
-      </div>
+      </section>
 
-      <div id="view-lessons" class="card" style="display:none">
-        <h2>Lecciones</h2>
-        <p class="muted">Completa lecciones para ganar XP y subir de nivel.</p>
+      <!-- LECCIONES -->
+      <section id="view-lessons" class="card" style="display:none" role="region" aria-label="Lecciones">
+        <h2>Lecciones y niveles</h2>
+        <p class="muted">Complete lecciones para ganar XP y desbloquear contenido.</p>
 
         <div style="margin-top:12px" class="card">
           <h4 style="margin:0 0 8px 0">Niveles</h4>
           <div id="levels-list" class="lesson-list"></div>
         </div>
 
-        <div style="margin-top:12px" id="lesson-area" class="card" hidden>
-          <button class="small" id="close-lesson">&larr; Volver</button>
+        <div id="lesson-area" class="card" hidden>
+          <button class="btn btn-ghost small" id="close-lesson">&larr; Volver</button>
           <h3 id="lesson-title"></h3>
           <p class="muted" id="lesson-desc"></p>
           <div id="exercise-area" style="margin-top:12px"></div>
         </div>
-      </div>
+      </section>
 
-      <div id="view-dictionary" class="card" style="display:none">
-        <h2>Diccionario bilingüe</h2>
-        <input id="dict-search" placeholder="Buscar (español o wayu)" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);width:100%;margin-bottom:8px" />
-        <div id="dict-list"></div>
-      </div>
+      <!-- DICCIONARIO -->
+      <section id="view-dictionary" class="card" style="display:none" role="region" aria-label="Diccionario">
+        <h2>Diccionario Español ↔ Wayuunaiki</h2>
+        <input id="dict-search" placeholder="Buscar palabra (español o wayu)" />
+        <div id="dict-list" style="margin-top:10px"></div>
+      </section>
 
-      <div id="view-profile" class="card" style="display:none">
+      <!-- PERFIL -->
+      <section id="view-profile" class="card" style="display:none" role="region" aria-label="Perfil">
         <h2>Perfil</h2>
-        <div class="muted">Editar su perfil</div>
+        <div class="muted">Edite su perfil</div>
+        <label style="margin-top:10px">Nombre</label>
+        <input id="profile-name" />
+        <label style="margin-top:8px">Iniciales (avatar)</label>
+        <input id="profile-initials" maxlength="2" />
         <div style="margin-top:8px">
-          <label>Nombre</label>
-          <input id="profile-name" />
-          <label>Iniciales/avatar</label>
-          <input id="profile-initials" maxlength="2" />
-          <div style="margin-top:8px">
-            <button class="btn btn-primary" id="save-profile">Guardar</button>
-          </div>
+          <button class="btn btn-primary" id="save-profile">Guardar perfil</button>
         </div>
-      </div>
+      </section>
 
-      <div id="view-admin" class="card" style="display:none">
-        <h2>Administrador — creación rápida</h2>
+      <!-- ADMIN -->
+      <section id="view-admin" class="card" style="display:none" role="region" aria-label="Administrador">
+        <h2>Panel administrativo (local)</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div class="card">
             <h4>Crear nivel</h4>
             <input id="new-level-name" placeholder="Nombre nivel (ej. Básico 1)" />
-            <textarea id="new-level-desc" placeholder="Descripción" style="height:70px"></textarea>
+            <textarea id="new-level-desc" placeholder="Descripción" style="height:80px"></textarea>
             <button class="btn btn-primary" id="create-level">Crear nivel</button>
           </div>
           <div class="card">
             <h4>Crear lección</h4>
             <select id="sel-level"></select>
             <input id="new-lesson-title" placeholder="Título lección" />
-            <textarea id="new-lesson-body" placeholder="Descripción/Contenido" style="height:70px"></textarea>
+            <textarea id="new-lesson-body" placeholder="Descripción/Contenido" style="height:80px"></textarea>
             <button class="btn btn-primary" id="create-lesson">Crear lección</button>
           </div>
         </div>
@@ -262,20 +275,38 @@
           <input id="dict-wy" placeholder="Wayuunaiki (transcripción)" />
           <button class="btn btn-primary" id="create-word">Agregar palabra</button>
         </div>
-      </div>
+
+        <div style="margin-top:12px" class="card">
+          <h4>Importar contenido de ejemplo</h4>
+          <button class="btn small" id="seed-demo">Cargar demo</button>
+          <button class="btn small" id="clear-data">Borrar todo (reset)</button>
+        </div>
+      </section>
 
     </main>
   </div>
 
-  <footer>WayunaikLearn • Demo local — Hecho por CorreQ · 2025</footer>
+  <footer>WayunaikLearn — Demo local · Hecho por CorreQ · 2025</footer>
 </div>
 
+<!-- =========================
+     Script principal (todo en un archivo)
+     ========================= -->
 <script>
-/* =========================
-   Datos iniciales y util
-   ========================= */
-const STORAGE_KEY='wayunaik_data_v1';
-const USER_KEY='wayunaik_current_user';
+/*
+  WayunaikLearn - Single file app
+  - Local storage based
+  - Gamified: XP, niveles, racha
+  - Lecciones: MCQ, texto, escucha
+  - Diccionario con TTS (SpeechSynthesis)
+  - Panel admin local
+  - Export / Import JSON
+  - Recursos (imágenes) obtenidos desde Internet en la UI
+*/
+
+// Keys de almacenamiento
+const STORAGE_KEY = 'wayunaik_data_v2';
+const USER_KEY = 'wayunaik_current_user_v2';
 
 // Estructura de datos por defecto
 const defaults = {
@@ -287,521 +318,568 @@ const defaults = {
   results: {}
 };
 
-// util: load/save
-function loadData(){ try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : structuredClone(defaults); } catch(e){ return structuredClone(defaults); } }
+// Cargar / guardar
+function loadData(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : structuredClone(defaults);
+  } catch(e){
+    console.error('Error loadData', e);
+    return structuredClone(defaults);
+  }
+}
 function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
-// crear demo si vacío
+// Inicializar si vacío
 let data = loadData();
-if (data.levels.length===0){
-  // demo levels/lessons/exercises/dict
-  const lvl1 = { id: genId(), name:'Básico 1', desc:'Saludos y presentaciones' };
-  const lvl2 = { id: genId(), name:'Intermedio 1', desc:'Familia y rutinas' };
-  data.levels.push(lvl1, lvl2);
-
-  const les1 = { id: genId(), levelId: lvl1.id, title:'Saludos', body:'Saludos básicos en Wayuunaiki' };
-  data.lessons.push(les1);
-
-  // exercises: mcq + open
-  data.exercises.push({
-    id: genId(), lessonId: les1.id, type:'mcq',
-    prompt:'¿Cómo se dice "Hola" en Wayuunaiki?',
-    options:['Ashajawaa','Washi','Süchi'], correctIndex:0, xp:10
-  });
-  data.exercises.push({
-    id: genId(), lessonId: les1.id, type:'text',
-    prompt:'Traduce al español: "Ashajawaa"', answer:'Hola', xp:10
-  });
-
-  // diccionario
-  data.dictionary.push({ id: genId(), spanish:'Hola', wayu:'Ashajawaa' });
-  data.dictionary.push({ id: genId(), spanish:'Madre', wayu:'Piichi' });
-  saveData(data);
+function ensureDemoIfEmpty(){
+  if (data.levels.length === 0){
+    seedDemo();
+  }
 }
+ensureDemoIfEmpty();
+saveData(data);
 
-/* =========================
-   Estado de sesión
-   ========================= */
+/* Estado */
 let state = {
-  currentView:'dashboard',
-  currentUser:null,
-  currentLesson:null,
-  sessionExerciseIndex:0
+  currentUser: null,
+  currentView: 'dashboard',
+  currentLesson: null,
+  sessionIndex: 0
 };
 
-const el = sel=>document.querySelector(sel);
-const els = sel=>document.querySelectorAll(sel);
+/* Util selectores */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 
-/* =========================
-   Inicialización UI
-   ========================= */
+/* Inicial */
+init();
+
 function init(){
   renderAuthArea();
   renderTopActions();
-  bindNavButtons();
-  renderSideNav();
+  bindSideNav();
   renderLevels();
   renderDictionary();
-  renderProfile();
-  renderAdminLevels();
+  renderAdminSelect();
+  bindButtons();
+  restoreSession();
   showView('dashboard');
-
-  const cur = localStorage.getItem(USER_KEY);
-  if (cur) {
-    const u = JSON.parse(cur);
-    signInLocal(u.username, false); // restore
-  }
 }
-init();
 
-/* =========================
-   Authentication (local)
-   ========================= */
+/* ------------------------
+   AUTH (local)
+   ------------------------ */
 function renderAuthArea(){
-  const authArea = el('#auth-area');
-  authArea.innerHTML = `
-    <div id="login-form" class="card">
+  $('#auth-area').innerHTML = `
+    <div id="login-card" class="card">
       <h3>Iniciar sesión</h3>
-      <input id="login-user" placeholder="Usuario (email opcional)" />
+      <input id="login-user" placeholder="Usuario (ej: juan)" />
       <input id="login-pass" placeholder="Contraseña" type="password" />
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="btn btn-primary" id="btn-login">Ingresar</button>
-        <button class="btn btn-ghost" id="btn-show-register">Registrarse</button>
+        <button class="btn btn-ghost" id="btn-show-register">Registrar</button>
       </div>
-      <p class="muted" style="margin-top:8px">Para demo: marque 'admin' en registro si desea panel admin local.</p>
+      <p class="muted" style="margin-top:8px">Para demo, marque 'Crear como admin' en registro.</p>
     </div>
-
-    <div id="register-form" class="card" style="display:none">
+    <div id="register-card" class="card" style="display:none">
       <h3>Crear cuenta</h3>
-      <input id="reg-user" placeholder="Usuario" />
+      <input id="reg-user" placeholder="Usuario (ej: juan)" />
       <input id="reg-pass" placeholder="Contraseña" type="password" />
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-        <label style="font-size:13px"><input id="reg-admin" type="checkbox" /> Crear como admin</label>
-      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input id="reg-admin" type="checkbox" /> Crear como admin</label>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="btn btn-primary" id="btn-create">Crear</button>
         <button class="btn btn-ghost" id="btn-cancel-create">Cancelar</button>
       </div>
     </div>
   `;
-  // events
-  el('#btn-show-register').onclick = ()=>{ el('#login-form').style.display='none'; el('#register-form').style.display='block'; };
-  el('#btn-cancel-create').onclick = ()=>{ el('#login-form').style.display='block'; el('#register-form').style.display='none'; };
-  el('#btn-create').onclick = createAccount;
-  el('#btn-login').onclick = ()=>{ const u=el('#login-user').value.trim(), p=el('#login-pass').value; signInLocal(u); };
+  // eventos
+  $('#btn-show-register').onclick = ()=>{ $('#login-card').style.display='none'; $('#register-card').style.display='block'; window.scrollTo({top:0,behavior:'smooth'}) };
+  $('#btn-cancel-create').onclick = ()=>{ $('#login-card').style.display='block'; $('#register-card').style.display='none' };
+  $('#btn-create').onclick = createAccount;
+  $('#btn-login').onclick = ()=> { const u = $('#login-user').value.trim(), p = $('#login-pass').value; signInLocal(u, p) };
 }
 
 function createAccount(){
-  const username = el('#reg-user').value.trim();
-  const pass = el('#reg-pass').value;
-  const isAdmin = el('#reg-admin').checked;
-  if (!username || !pass) return alert('Complete usuario y contraseña');
-  const users = data.users || {};
-  if (users[username]) return alert('Usuario ya existe');
-  users[username] = { username, pass, initials: initialsFrom(username), isAdmin, xp:0, level:1, streak:0, completed:[] };
-  data.users = users; saveData(data);
-  alert('Cuenta creada. Ya puede iniciar sesión.');
-  el('#reg-user').value = el('#reg-pass').value = '';
-  el('#login-form').style.display='block'; el('#register-form').style.display='none';
+  const username = $('#reg-user').value.trim();
+  const pass = $('#reg-pass').value;
+  const isAdmin = $('#reg-admin').checked;
+  if (!username || !pass) return alert('Complete usuario y contraseña.');
+  if (!/^[\w\-\.]{2,30}$/.test(username)) return alert('Usuario inválido (solo letras, números, guión o punto).');
+  if (data.users[username]) return alert('Usuario ya existe.');
+  const user = { username, pass, initials: initialsFrom(username), isAdmin, xp:0, level:1, streak:0, completed:[], lastLessonId:null, lastLessonTitle:null, createdAt:Date.now() };
+  data.users[username] = user; saveData(data);
+  alert('Cuenta creada correctamente. Inicie sesión.');
+  $('#reg-user').value = $('#reg-pass').value = ''; $('#reg-admin').checked=false;
+  $('#login-card').style.display='block'; $('#register-card').style.display='none';
 }
 
-function signInLocal(username, save=true){
-  if (!username) return alert('Ingrese usuario');
-  const user = data.users[username];
-  if (!user) return alert('Usuario no encontrado. Regístrese.');
+function signInLocal(username, password){
+  if (!username) return alert('Ingrese usuario.');
+  const u = data.users[username];
+  if (!u) return alert('Usuario no encontrado.');
+  // demo: no validamos contraseña severamente (pero se compara)
+  if (u.pass !== password) return alert('Contraseña incorrecta.');
   state.currentUser = username;
   localStorage.setItem(USER_KEY, JSON.stringify({ username }));
-  renderAfterLogin();
+  onLogin();
 }
 
 function logout(){
   state.currentUser = null;
   localStorage.removeItem(USER_KEY);
-  renderAfterLogout();
+  onLogout();
 }
 
-/* =========================
-   Render después login
-   ========================= */
-function renderAfterLogin(){
-  // hide auth forms, show user panel
-  el('#auth-area').style.display='none';
-  el('#user-panel').style.display='block';
-  updateUserPanel();
+/* ------------------------
+   On login/out UI
+   ------------------------ */
+function onLogin(){
+  $('#auth-area').style.display='none';
+  $('#user-panel').style.display='block';
   renderTopActions();
-  renderSideNav();
+  renderSideNavInfo();
+  renderLevels();
+  renderDictionary();
+  renderAdminSelect();
   showView('dashboard');
 }
 
-function renderAfterLogout(){
-  el('#auth-area').style.display='block';
-  el('#user-panel').style.display='none';
+function onLogout(){
+  $('#auth-area').style.display='block';
+  $('#user-panel').style.display='none';
   renderTopActions();
   showView('dashboard');
 }
 
-/* =========================
-   Top actions (login/register OR profile)
-   ========================= */
-function renderTopActions(){
-  const top = el('#top-actions');
-  top.innerHTML = '';
-  if (!state.currentUser){
-    const b1 = document.createElement('button'); b1.className='btn btn-ghost'; b1.textContent='Iniciar / Registrar';
-    b1.onclick = ()=>{ window.scrollTo({top:0,behavior:'smooth'}); }
-    top.appendChild(b1);
-  } else {
-    const usr = data.users[state.currentUser];
-    const span = document.createElement('div'); span.className='muted'; span.textContent = usr.username + (usr.isAdmin ? ' · Admin' : '');
-    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Salir';
-    btn.onclick = ()=>{ logout(); };
-    top.appendChild(span); top.appendChild(btn);
+/* Restore session if exists */
+function restoreSession(){
+  const cur = localStorage.getItem(USER_KEY);
+  if (cur){
+    try {
+      const obj = JSON.parse(cur);
+      if (obj && obj.username && data.users[obj.username]) {
+        state.currentUser = obj.username;
+        onLogin();
+      }
+    } catch(e){}
   }
 }
 
-/* =========================
-   Side nav behavior
-   ========================= */
-function bindNavButtons(){
+/* ------------------------
+   Top actions
+   ------------------------ */
+function renderTopActions(){
+  const top = $('#top-actions'); top.innerHTML='';
+  if (!state.currentUser){
+    const btn = document.createElement('button'); btn.className='btn btn-ghost'; btn.textContent='Iniciar / Registrar';
+    btn.onclick = ()=>{ window.scrollTo({top:0,behavior:'smooth'}) };
+    top.appendChild(btn);
+  } else {
+    const u = data.users[state.currentUser];
+    const span = document.createElement('div'); span.className='muted'; span.textContent = `${u.username} ${u.isAdmin?'· Admin':''}`;
+    const btnOut = document.createElement('button'); btnOut.className='btn'; btnOut.textContent='Cerrar sesión';
+    btnOut.onclick = ()=>logout();
+    top.appendChild(span); top.appendChild(btnOut);
+  }
+}
+
+/* ------------------------
+   Side nav
+   ------------------------ */
+function bindSideNav(){
   document.addEventListener('click', (e)=>{
     const t = e.target;
-    if (t.matches('nav.sidebar button')) {
+    if (t.matches('nav.sidebar button')){
       document.querySelectorAll('nav.sidebar button').forEach(b=>b.classList.remove('active'));
       t.classList.add('active');
-      const view = t.dataset.view;
-      showView(view);
+      showView(t.dataset.view);
     }
   });
-  el('#btn-logout').onclick = logout;
-  el('#btn-continue').onclick = ()=>{ if (data.users[state.currentUser]) { const completed = data.users[state.currentUser].lastLessonId; if (completed) openLessonById(completed); else showView('lessons'); } }
-  el('#backup-btn').onclick = ()=>{ exportImportDialog(); };
+  $('#btn-logout').onclick = ()=>logout();
+  $('#btn-continue').onclick = ()=> {
+    if (!state.currentUser) return alert('Inicie sesión para continuar.');
+    const u = data.users[state.currentUser];
+    if (u.lastLessonId) openLessonById(u.lastLessonId); else { showView('lessons'); }
+  };
+  $('#backup-btn').onclick = ()=> exportImportDialog();
 }
 
-/* =========================
-   Render side nav & user info
-   ========================= */
-function renderSideNav(){
+/* ------------------------
+   Render user info
+   ------------------------ */
+function renderSideNavInfo(){
   if (!state.currentUser) return;
   const u = data.users[state.currentUser];
-  el('#avatar').textContent = u.initials || initialsFrom(u.username);
-  el('#welcome').innerHTML = `<strong>${u.username}</strong>`;
-  el('#role').textContent = u.isAdmin ? 'Administrador' : 'Usuario';
-  el('#progbar').style.width = Math.min(100, Math.round((u.xp%100)/100*100)) + '%';
-  el('#xptext').textContent = `XP: ${u.xp} · Nivel ${u.level}`;
-  el('#streak').textContent = u.streak || 0;
-  el('#dash-level').textContent = u.level;
-  el('#dash-xp').textContent = u.xp;
-  el('#dash-completed').textContent = (u.completed||[]).length;
+  $('#avatar').textContent = u.initials || initialsFrom(u.username);
+  $('#welcome').innerHTML = `<strong>${u.username}</strong>`;
+  $('#role').textContent = u.isAdmin ? 'Administrador' : 'Usuario';
+  $('#progbar').style.width = Math.min(100, Math.round((u.xp%100))) + '%';
+  $('#xptext').textContent = `XP: ${u.xp} · Nivel ${u.level}`;
+  $('#streak').textContent = u.streak || 0;
+  $('#dash-level').textContent = u.level;
+  $('#dash-xp').textContent = u.xp;
+  $('#dash-completed').textContent = (u.completed||[]).length;
+  // continue area
+  $('#continue-area').textContent = u.lastLessonTitle ? `Última lección: ${u.lastLessonTitle}` : 'Comience una lección desde Lecciones.';
 }
 
-/* =========================
-   Views handling
-   ========================= */
-function showView(view){
-  state.currentView = view;
-  ['dashboard','lessons','dictionary','profile','admin'].forEach(v=>{
-    el('#view-'+v).style.display = (v===view ? 'block' : 'none');
+/* ------------------------
+   Vistas
+   ------------------------ */
+function showView(v){
+  state.currentView = v;
+  const views = ['dashboard','lessons','dictionary','profile','admin'];
+  views.forEach(name => {
+    const elv = document.getElementById('view-'+name);
+    if (elv) elv.style.display = (name === v ? 'block' : 'none');
   });
-  // update dashboard
-  if (view==='dashboard') {
-    if (state.currentUser) {
-      const u=data.users[state.currentUser];
-      el('#continue-area').textContent = u.lastLessonTitle ? `Última lección: ${u.lastLessonTitle}` : 'No hay lecciones recientes.';
-    }
-  }
+  if (v === 'dashboard' && state.currentUser) renderSideNavInfo();
 }
 
-/* =========================
-   Levels & lessons render
-   ========================= */
+/* ------------------------
+   Levels & lessons
+   ------------------------ */
 function renderLevels(){
-  const container = el('#levels-list'); container.innerHTML = '';
+  const container = $('#levels-list'); if(!container) return;
+  container.innerHTML = '';
   data.levels.forEach(level=>{
-    const tile = document.createElement('div'); tile.className='tile';
-    const locked = false; // control de desbloqueo por XP se puede añadir
-    if (locked) tile.classList.add('locked');
-    tile.innerHTML = `<strong>${level.name}</strong><div class="muted">${level.desc||''}</div>`;
-    tile.onclick = ()=>{ if (!locked) openLevel(level.id); };
-    container.appendChild(tile);
+    const div = document.createElement('div'); div.className='tile';
+    const completedCount = data.lessons.filter(l=>l.levelId===level.id && (state.currentUser && data.users[state.currentUser].completed.includes(l.id))).length;
+    div.innerHTML = `<strong>${level.name}</strong><div class="muted">${level.desc||''}</div><div style="margin-top:8px;font-size:13px;color:var(--muted)">${completedCount} lecciones completadas</div>`;
+    div.onclick = ()=> openLevel(level.id);
+    container.appendChild(div);
   });
 }
 
 function openLevel(levelId){
-  // mostrar lecciones pertenecientes
   const lessons = data.lessons.filter(l=>l.levelId===levelId);
-  const area = el('#lesson-area');
-  area.hidden = false;
-  el('#lesson-title').textContent = data.levels.find(l=>l.id===levelId).name;
-  el('#lesson-desc').textContent = 'Seleccione una lección';
-  const exArea = el('#exercise-area'); exArea.innerHTML='';
+  const area = $('#lesson-area'); area.hidden=false;
+  $('#lesson-title').textContent = (data.levels.find(l=>l.id===levelId)||{}).name || '';
+  $('#lesson-desc').textContent = 'Seleccione una lección';
+  const exArea = $('#exercise-area'); exArea.innerHTML = '';
   lessons.forEach(ls=>{
-    const d = document.createElement('div'); d.className='tile';
-    d.innerHTML = `<strong>${ls.title}</strong><div class="muted">${ls.body||''}</div>`;
-    d.onclick = ()=>openLesson(ls.id);
-    exArea.appendChild(d);
+    const node = document.createElement('div'); node.className='tile';
+    node.innerHTML = `<strong>${ls.title}</strong><div class="muted">${ls.body||''}</div>`;
+    node.onclick = ()=> openLesson(ls.id);
+    exArea.appendChild(node);
   });
-  el('#close-lesson').onclick = ()=>{ area.hidden=true; };
+  $('#close-lesson').onclick = ()=>{ area.hidden=true; };
   showView('lessons');
 }
 
-/* Open lesson by id (continue) */
-function openLessonById(lessonId){
-  const ls = data.lessons.find(l=>l.id===lessonId);
-  if (!ls) return alert('Lección no encontrada');
-  openLesson(ls.id);
+/* Open lesson */
+function openLessonById(id){
+  const lesson = data.lessons.find(l=>l.id===id);
+  if (lesson) openLesson(lesson.id);
 }
 
-/* render single lesson and load exercises sequentially */
 function openLesson(lessonId){
   const lesson = data.lessons.find(l=>l.id===lessonId);
-  if (!lesson) return;
-  el('#lesson-area').hidden=false;
-  el('#lesson-title').textContent = lesson.title;
-  el('#lesson-desc').textContent = lesson.body || '';
+  if (!lesson) return alert('Lección no encontrada.');
+  $('#lesson-area').hidden=false;
+  $('#lesson-title').textContent = lesson.title;
+  $('#lesson-desc').textContent = lesson.body || '';
   state.currentLesson = lesson;
-  // store last lesson
+  // store last lesson for user
   if (state.currentUser){
     const u = data.users[state.currentUser];
-    u.lastLessonId = lesson.id; u.lastLessonTitle = lesson.title; saveData(data); renderSideNav();
+    u.lastLessonId = lesson.id; u.lastLessonTitle = lesson.title; saveData(data);
+    renderSideNavInfo();
   }
-  // load exercises
+  // load exercises for lesson
   const exs = data.exercises.filter(e=>e.lessonId===lesson.id);
-  if (exs.length===0){
-    el('#exercise-area').innerHTML = '<div class="muted">No hay ejercicios en esta lección.</div>';
-    return;
-  }
-  state.sessionExerciseIndex=0;
-  renderExercise(exs[state.sessionExerciseIndex], exs);
+  if (exs.length===0) { $('#exercise-area').innerHTML='<div class="muted">No hay ejercicios en esta lección.</div>'; return; }
+  state.sessionIndex = 0;
+  renderExercise(exs[state.sessionIndex], exs);
 }
 
-/* render exercise */
+/* ------------------------
+   Exercises
+   ------------------------ */
 function renderExercise(ex, list){
-  const area = el('#exercise-area'); area.innerHTML='';
-  const q = document.createElement('div'); q.className='exercise-question'; q.textContent = ex.prompt;
+  const area = $('#exercise-area'); area.innerHTML='';
+  const q = document.createElement('div'); q.className='question'; q.textContent = ex.prompt;
   area.appendChild(q);
-  const opts = document.createElement('div'); opts.className='options';
+
+  const meta = document.createElement('div'); meta.className='muted'; meta.style.fontSize='13px'; meta.textContent = `Tipo: ${ex.type} · XP: ${ex.xp||10}`; area.appendChild(meta);
+
+  const opts = document.createElement('div'); opts.className='options'; opts.style.marginTop='12px';
+
   if (ex.type === 'mcq'){
-    ex.options.forEach((o,i)=>{
-      const btn = document.createElement('div'); btn.className='option'; btn.textContent = o;
-      btn.onclick = async ()=>{
-        const correct = (i === ex.correctIndex);
-        markOption(btn, correct);
+    ex.options.forEach((opt, idx)=>{
+      const b = document.createElement('div'); b.className='option'; b.textContent = opt;
+      b.onclick = async ()=>{
+        const correct = idx === ex.correctIndex;
+        b.classList.add(correct? 'correct':'wrong');
         await afterAnswer(correct, ex);
-        // next
-        setTimeout(()=> nextExercise(list),800);
+        setTimeout(()=> nextExercise(list), 700);
       };
-      opts.appendChild(btn);
+      opts.appendChild(b);
     });
   } else if (ex.type === 'text'){
     const inp = document.createElement('input'); inp.placeholder='Escriba su respuesta';
-    const ok = document.createElement('button'); ok.className='btn btn-primary'; ok.textContent='Enviar';
-    ok.onclick = async ()=>{
+    const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
+    send.onclick = async ()=>{
       const ans = inp.value.trim();
-      const correct = ex.answer && ans.toLowerCase()===ex.answer.toLowerCase();
-      markOption(inp, correct);
+      const correct = ex.answer && ans.toLowerCase() === ex.answer.toLowerCase();
+      if (correct) inp.style.borderColor='rgba(25,169,116,0.3)'; else inp.style.borderColor='rgba(193,73,83,0.3)';
       await afterAnswer(correct, ex);
-      setTimeout(()=> nextExercise(list),800);
+      setTimeout(()=> nextExercise(list),700);
     };
-    opts.appendChild(inp); opts.appendChild(ok);
+    opts.appendChild(inp); opts.appendChild(send);
   } else if (ex.type === 'listen'){
-    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Reproducir audio';
-    btn.onclick = ()=> speak(ex.prompt);
-    const inp = document.createElement('input'); inp.placeholder='Escriba lo que escuchó';
-    const ok = document.createElement('button'); ok.className='btn btn-primary'; ok.textContent='Enviar';
-    ok.onclick = async ()=>{
+    const play = document.createElement('button'); play.className='btn'; play.textContent='🔊 Reproducir';
+    play.onclick = ()=> speak(ex.prompt);
+    const inp = document.createElement('input'); inp.placeholder='Transcriba lo que escuchó';
+    const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
+    send.onclick = async ()=>{
       const correct = ex.answer && inp.value.trim().toLowerCase()===ex.answer.toLowerCase();
       await afterAnswer(correct, ex);
-      setTimeout(()=> nextExercise(list),800);
+      setTimeout(()=> nextExercise(list),700);
     };
-    opts.appendChild(btn); opts.appendChild(inp); opts.appendChild(ok);
+    opts.appendChild(play); opts.appendChild(inp); opts.appendChild(send);
   }
+
   area.appendChild(opts);
 }
 
-/* mark option */
-function markOption(elm, correct){
-  if (elm.classList.contains('option')){
-    if (correct) elm.classList.add('correct'); else elm.classList.add('wrong');
-  }
-}
-
-/* afterAnswer: update user XP/progress */
+/* Update user XP, results */
 async function afterAnswer(correct, ex){
-  if (!state.currentUser) { alert('Inicie sesión para guardar progreso'); return; }
+  if (!state.currentUser) { alert('Inicie sesión para guardar progreso.'); return; }
   const u = data.users[state.currentUser];
-  const xp = ex.xp || (correct?10:0);
-  if (correct){
-    u.xp = (u.xp||0) + xp;
-    // level up every 100 xp
-    if (u.xp >= u.level*100){ u.level = u.level + 1; alert('¡Subió de nivel!'); }
+  const xpGain = correct ? (ex.xp || 10) : -2;
+  u.xp = Math.max(0, (u.xp || 0) + xpGain);
+  if (correct) {
     u.streak = (u.streak||0) + 1;
-    // mark completed
+    // marcar completada la lección
     u.completed = u.completed || [];
     if (!u.completed.includes(state.currentLesson.id)) u.completed.push(state.currentLesson.id);
   } else {
-    // penalizar leve
-    u.xp = Math.max(0, (u.xp||0) - 2);
     u.streak = 0;
   }
-  // save result
+  // level up cada 100 XP
+  if (u.xp >= u.level * 100) { u.level = u.level + 1; alert('¡Felicitaciones! Subió de nivel.'); }
+
+  // save results
   data.users[state.currentUser] = u;
   data.results[state.currentUser] = data.results[state.currentUser] || [];
-  data.results[state.currentUser].push({ exerciseId: ex.id, correct, at:Date.now() });
+  data.results[state.currentUser].push({ exerciseId: ex.id, correct, at: Date.now() });
   saveData(data);
-  renderSideNav();
+  renderSideNavInfo();
 }
 
-/* nextExercise */
+/* next exercise */
 function nextExercise(list){
-  state.sessionExerciseIndex++;
-  if (state.sessionExerciseIndex < list.length){
-    renderExercise(list[state.sessionExerciseIndex], list);
-  } else {
-    el('#exercise-area').innerHTML = '<div class="muted">Lección completa 🎉</div>';
-  }
+  state.sessionIndex++;
+  if (state.sessionIndex < list.length) renderExercise(list[state.sessionIndex], list);
+  else $('#exercise-area').innerHTML = '<div class="muted">Lección completa 🎉</div>';
 }
 
-/* =========================
+/* ------------------------
    Dictionary
-   ========================= */
+   ------------------------ */
 function renderDictionary(){
-  const list = el('#dict-list'); list.innerHTML='';
+  const listEl = $('#dict-list'); if (!listEl) return;
+  listEl.innerHTML = '';
   data.dictionary.forEach(w=>{
-    const div = document.createElement('div'); div.className='dictionary-item';
-    div.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
-    const play = document.createElement('button'); play.className='small'; play.textContent='🔊';
+    const d = document.createElement('div'); d.className='dictionary-item';
+    d.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
+    const right = document.createElement('div');
+    const play = document.createElement('button'); play.className='btn small'; play.textContent='🔊';
     play.onclick = ()=> speak(w.wayu);
-    div.appendChild(play);
-    list.appendChild(div);
+    right.appendChild(play);
+    d.appendChild(right);
+    listEl.appendChild(d);
   });
-  el('#dict-search').oninput = ()=>{
-    const q = el('#dict-search').value.trim().toLowerCase();
-    list.innerHTML=''; data.dictionary.filter(d=>!q || d.spanish.toLowerCase().includes(q) || d.wayu.toLowerCase().includes(q)).forEach(w=>{
-      const div = document.createElement('div'); div.className='dictionary-item';
-      div.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
-      const play = document.createElement('button'); play.className='small'; play.textContent='🔊';
+  $('#dict-search').oninput = ()=>{
+    const q = $('#dict-search').value.trim().toLowerCase();
+    const filtered = data.dictionary.filter(d=>!q || d.spanish.toLowerCase().includes(q) || d.wayu.toLowerCase().includes(q));
+    listEl.innerHTML = '';
+    filtered.forEach(w=>{
+      const d = document.createElement('div'); d.className='dictionary-item';
+      d.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
+      const right = document.createElement('div');
+      const play = document.createElement('button'); play.className='btn small'; play.textContent='🔊';
       play.onclick = ()=> speak(w.wayu);
-      div.appendChild(play);
-      list.appendChild(div);
+      right.appendChild(play);
+      d.appendChild(right);
+      listEl.appendChild(d);
     });
   };
 }
 
-/* =========================
-   Admin creation
-   ========================= */
-el('#create-level').onclick = ()=>{
+/* ------------------------
+   Admin functions
+   ------------------------ */
+$('#create-level').onclick = ()=> {
   if (!checkAdmin()) return;
-  const name = el('#new-level-name').value.trim(), desc = el('#new-level-desc').value.trim();
+  const name = $('#new-level-name').value.trim(), desc = $('#new-level-desc').value.trim();
   if (!name) return alert('Nombre requerido');
-  data.levels.push({ id: genId(), name, desc }); saveData(data);
-  el('#new-level-name').value=''; el('#new-level-desc').value='';
-  renderLevels(); renderAdminLevels();
+  data.levels.push({ id: genId(), name, desc });
+  saveData(data); $('#new-level-name').value=''; $('#new-level-desc').value=''; renderLevels(); renderAdminSelect();
 };
 
-el('#create-lesson').onclick = ()=>{
+$('#create-lesson').onclick = ()=>{
   if (!checkAdmin()) return;
-  const levelId = el('#sel-level').value; const title=el('#new-lesson-title').value.trim(), body=el('#new-lesson-body').value.trim();
+  const levelId = $('#sel-level').value; const title = $('#new-lesson-title').value.trim(), body = $('#new-lesson-body').value.trim();
   if (!levelId || !title) return alert('Seleccione nivel y título');
-  data.lessons.push({ id: genId(), levelId, title, body }); saveData(data);
-  el('#new-lesson-title').value=''; el('#new-lesson-body').value='';
-  alert('Lección creada');
-  renderLevels();
+  data.lessons.push({ id: genId(), levelId, title, body });
+  saveData(data); $('#new-lesson-title').value=''; $('#new-lesson-body').value=''; alert('Lección creada'); renderLevels();
 };
 
-el('#create-word').onclick = ()=>{
+$('#create-word').onclick = ()=>{
   if (!checkAdmin()) return;
-  const es=el('#dict-es').value.trim(), wy=el('#dict-wy').value.trim();
-  if (!es||!wy) return alert('Complete campos');
-  data.dictionary.push({ id: genId(), spanish:es, wayu:wy }); saveData(data); el('#dict-es').value=''; el('#dict-wy').value=''; renderDictionary();
+  const es = $('#dict-es').value.trim(), wy = $('#dict-wy').value.trim();
+  if (!es || !wy) return alert('Complete campos');
+  data.dictionary.push({ id: genId(), spanish:es, wayu:wy });
+  saveData(data); $('#dict-es').value=''; $('#dict-wy').value=''; renderDictionary();
 };
 
-/* populate level selector for admin */
-function renderAdminLevels(){
-  const sel = el('#sel-level'); sel.innerHTML='';
-  data.levels.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.name; sel.appendChild(o); });
+$('#seed-demo').onclick = ()=> {
+  if (!checkAdmin()) return;
+  seedDemo(true);
+  alert('Contenido de ejemplo cargado.');
+};
+$('#clear-data').onclick = ()=> {
+  if (!checkAdmin()) return;
+  if (!confirm('Eliminar todos los datos locales (usuarios, contenido)?')) return;
+  localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(USER_KEY); location.reload();
+};
+
+/* populate admin level select */
+function renderAdminSelect(){
+  const sel = $('#sel-level'); if(!sel) return;
+  sel.innerHTML = '';
+  data.levels.forEach(l=>{ const o = document.createElement('option'); o.value = l.id; o.textContent = l.name; sel.appendChild(o); });
 }
 
-/* checkAdmin */
+/* check admin */
 function checkAdmin(){
-  if (!state.currentUser) return alert('Inicie sesión como admin');
-  const u=data.users[state.currentUser];
-  if (!u || !u.isAdmin) return alert('Acceso restringido: administrador');
+  if (!state.currentUser) return alert('Inicie sesión como administrador.');
+  const u = data.users[state.currentUser];
+  if (!u || !u.isAdmin) return alert('Acceso restringido: requiere rol admin.');
   return true;
 }
 
-/* =========================
+/* ------------------------
    Profile
-   ========================= */
-function renderProfile(){
-  el('#profile-name').value = state.currentUser ? data.users[state.currentUser].username : '';
-  el('#profile-initials').value = state.currentUser ? (data.users[state.currentUser].initials||'') : '';
-  el('#save-profile').onclick = ()=>{
-    if (!state.currentUser) return alert('Inicie sesión primero');
-    const u = data.users[state.currentUser];
-    u.username = el('#profile-name').value.trim() || u.username;
-    u.initials = el('#profile-initials').value.trim() || initialsFrom(u.username);
-    data.users[state.currentUser] = u; saveData(data); renderSideNav(); alert('Perfil guardado');
-  };
-}
+   ------------------------ */
+$('#save-profile').onclick = ()=>{
+  if (!state.currentUser) return alert('Inicie sesión primero.');
+  const u = data.users[state.currentUser];
+  const name = $('#profile-name').value.trim(); const initials = $('#profile-initials').value.trim();
+  if (name) u.username = name;
+  if (initials) u.initials = initials.toUpperCase();
+  data.users[state.currentUser] = u; saveData(data); alert('Perfil guardado'); renderSideNavInfo();
+};
 
-/* =========================
-   Backup / Export / Import
-   ========================= */
+/* ------------------------
+   Export / Import
+   ------------------------ */
 function exportImportDialog(){
-  const s = JSON.stringify(data, null, 2);
-  const ok = confirm('Exportar datos actuales a JSON y copiar al portapapeles? (Aceptar para copiar, Cancelar para importar desde prompt)');
-  if (ok){
-    navigator.clipboard.writeText(s).then(()=>alert('Datos copiados al portapapeles'));
+  const json = JSON.stringify(data, null, 2);
+  if (confirm('¿Desea copiar los datos actuales al portapapeles? (Aceptar) — Cancelar para importar JSON)')){
+    navigator.clipboard.writeText(json).then(()=>alert('Datos copiados al portapapeles.'));
   } else {
     const imported = prompt('Pegue aquí el JSON para importar:');
     if (imported){
-      try { data = JSON.parse(imported); saveData(data); alert('Importado OK — recargando UI'); location.reload(); } catch(e){ alert('JSON inválido'); }
+      try { data = JSON.parse(imported); saveData(data); alert('Importado correctamente — se recargará la interfaz.'); location.reload(); } catch(e){ alert('JSON inválido.'); }
     }
   }
 }
 
-/* =========================
+/* ------------------------
    Helpers
-   ========================= */
-function genId(){ return 'id_'+Math.random().toString(36).slice(2,9); }
-function initialsFrom(name){ return name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase(); }
+   ------------------------ */
+function genId(){ return 'id_' + Math.random().toString(36).slice(2,9); }
+function initialsFrom(name){ return name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase(); }
 function speak(text){
   if (!text) return;
   if ('speechSynthesis' in window){
     const ut = new SpeechSynthesisUtterance(text);
-    ut.lang = 'es-ES';
+    // si contiene caracteres no latinos, poner 'es-CO' todavía funciona para la demo
+    ut.lang = 'es-CO';
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(ut);
   } else {
-    alert('Texto: ' + text);
+    alert(text);
   }
 }
 
-/* =========================
-   Misc UI bindings + start
-   ========================= */
-el('#dict-list'); // ensure exists
-// navigation between main content via side nav
-document.addEventListener('click', (e)=>{
-  if (e.target.matches('nav.sidebar button')) return;
-});
+/* ------------------------
+   Seed demo content (Wayuunaiki samples)
+   ------------------------ */
+function seedDemo(force=false){
+  // if not force and data has levels, skip
+  if (!force && data.levels.length>0) return;
+  data = { users: {}, levels: [], lessons: [], exercises: [], dictionary: [], results:{} };
 
-// allow direct sign-in if users exist
-document.addEventListener('click', (e)=>{
-  if (e.target.id === 'btn-login') {
-    const u = el('#login-user').value.trim();
-    signInLocal(u);
-  }
-});
+  // create sample admin user
+  data.users['admin'] = { username:'admin', pass:'admin123', initials:'AD', isAdmin:true, xp:120, level:2, streak:4, completed:[], lastLessonId:null, createdAt:Date.now() };
+  data.users['juan'] = { username:'juan', pass:'1234', initials:'JM', isAdmin:false, xp:30, level:1, streak:2, completed:[], lastLessonId:null, createdAt:Date.now() };
 
-// initial render of dynamic areas
-renderLevels(); renderDictionary(); renderAdminLevels();
+  // levels
+  const lvl1 = { id: genId(), name:'Básico 1', desc:'Saludos, presentaciones y saludos cotidianos' };
+  const lvl2 = { id: genId(), name:'Intermedio 1', desc:'Familia, rutinas y tiempo' };
+  const lvl3 = { id: genId(), name:'Cultura Wayúu', desc:'Frases y expresiones culturales' };
+  data.levels.push(lvl1,lvl2,lvl3);
 
-/* expose simple global for debugging */
-window.WL = { data, saveData };
+  // lessons
+  const les1 = { id: genId(), levelId: lvl1.id, title:'Saludos', body:'Saludos básicos en Wayuunaiki' };
+  const les2 = { id: genId(), levelId: lvl1.id, title:'Presentaciones', body:'Decir su nombre y preguntar por otro' };
+  const les3 = { id: genId(), levelId: lvl2.id, title:'Familia', body:'Miembros de la familia' };
+  data.lessons.push(les1,les2,les3);
 
-/* end */
+  // exercises sample
+  data.exercises.push({
+    id: genId(), lessonId: les1.id, type:'mcq',
+    prompt:'¿Cómo se dice "Hola" en Wayuunaiki?',
+    options:['Ashajawaa','Washi','Süchi'], correctIndex:0, xp:12
+  });
+  data.exercises.push({
+    id: genId(), lessonId: les1.id, type:'text',
+    prompt:'Traduce al español: "Ashajawaa"', answer:'Hola', xp:10
+  });
+  data.exercises.push({
+    id: genId(), lessonId: les2.id, type:'mcq',
+    prompt:'¿Cuál es una forma de presentarse?',
+    options:['Yo soy...', '¿Dónde está...?', 'Gracias'], correctIndex:0, xp:10
+  });
+  data.exercises.push({
+    id: genId(), lessonId: les3.id, type:'listen',
+    prompt:'Piichi', answer:'Piichi', xp:10 // listen: reproduce la palabra (TTS)
+  });
+
+  // dictionary
+  data.dictionary.push({ id: genId(), spanish:'Hola', wayu:'Ashajawaa' });
+  data.dictionary.push({ id: genId(), spanish:'Madre', wayu:'Piichi' });
+  data.dictionary.push({ id: genId(), spanish:'Agua', wayu:'Wüin' });
+  data.dictionary.push({ id: genId(), spanish:'Gracias', wayu:'Jinain' });
+
+  saveData(data); renderLevels(); renderDictionary(); renderAdminSelect();
+}
+
+/* ------------------------
+   Misc bindings
+   ------------------------ */
+function bindButtons(){
+  // lesson/views nav
+  $('#close-lesson').onclick = ()=> { $('#lesson-area').hidden=true; }
+  // side nav initial binding (already in bindSideNav)
+  // search dictionary key handled in renderDictionary
+}
+
+/* Expose global for debugging if desea */
+window.WL = { data, saveData, seedDemo, genId };
+
+/* Final render/update */
+renderSideNavInfo();
+renderTopActions();
+renderLevels();
+renderDictionary();
+renderAdminSelect();
+
 </script>
 </body>
 </html>
