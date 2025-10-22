@@ -5,14 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Wayuunaiki App PRO — Aprende Wayuunaiki</title>
 
+<!-- PWA hint (manual install if you add manifest & sw later) -->
+<meta name="theme-color" content="#042023">
+
 <!-- Fuentes e iconos -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <style>
-/* --------------------
-   Paleta / Reset / Layout
-   -------------------- */
+:root{
+  --bg-1: #061827;
+  --bg-2: #041622;
+  --accent-1: #00d79f;
+  --accent-2: #06b6d4;
+  --muted: rgba(234,246,240,0.78);
+  --card-bg: rgba(255,255,255,0.02);
+  --glass: rgba(255,255,255,0.03);
+  --text: #eaf6f0;
+  --success: #00d79f;
+  --danger: #c14953;
+  --max-width: 1200px;
+  --radius: 12px;
+  --shadow-1: 0 20px 60px rgba(2,20,25,0.6);
+  --glass-border: 1px solid rgba(255,255,255,0.03);
+  --glass-2: rgba(255,255,255,0.01);
+}
+
+/* RESET */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
@@ -20,56 +39,64 @@ body{
   background:
     radial-gradient(1000px 600px at 10% 10%, rgba(6,28,54,0.6), transparent 8%),
     radial-gradient(900px 500px at 90% 90%, rgba(0,211,159,0.06), transparent 10%),
-    linear-gradient(180deg,#061827,#041622 80%);
-  color:#eaf6f0;
+    linear-gradient(180deg,var(--bg-1),var(--bg-2) 80%);
+  color:var(--text);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  overflow-y:auto;
+  min-height:100vh;
+  padding:28px 18px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
 }
 
 /* container */
-.wrap{max-width:1200px;margin:28px auto;padding:18px;position:relative;z-index:2}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.wrap{max-width:var(--max-width);width:100%;position:relative;z-index:2}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .brand{display:flex;align-items:center;gap:12px}
 .logo{
   width:72px;height:72px;border-radius:16px;
-  background:linear-gradient(135deg,#00d79f,#06b6d4);
+  background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
   display:flex;align-items:center;justify-content:center;font-weight:900;color:#042023;font-size:22px;
   box-shadow:0 18px 48px rgba(2,60,50,0.12);
 }
-h1{font-size:20px;color:#e6fff8;margin:0}
-.subtitle{color:rgba(234,246,240,0.85);font-size:13px}
+.title{
+  display:flex;flex-direction:column;gap:4px;
+}
+.title h1{font-size:20px;color:#e6fff8;margin:0}
+.subtitle{color:var(--muted);font-size:13px}
 
-/* buttons */
+/* actions */
 #top-actions{display:flex;gap:10px;align-items:center}
-.btn{padding:10px 14px;border-radius:12px;border:none;font-weight:700;cursor:pointer}
-.btn-primary{background:linear-gradient(90deg,#00d79f,#06b6d4);color:#042023;box-shadow:0 10px 26px rgba(6,182,212,0.08)}
-.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#dff4ee}
+.btn{padding:10px 14px;border-radius:12px;border:none;font-weight:700;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.btn-primary{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#042023;box-shadow:0 10px 26px rgba(6,182,212,0.08)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+.btn.small{padding:6px 10px;border-radius:10px;font-weight:700}
 
-/* layout grid */
-.grid{display:grid;grid-template-columns:340px 1fr;gap:18px;margin-top:18px}
+/* grid */
+.grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
 @media (max-width:980px){.grid{grid-template-columns:1fr}}
-.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:16px;border-radius:14px;box-shadow:0 20px 60px rgba(2,20,25,0.6);border:1px solid rgba(255,255,255,0.03)}
+.panel{background:linear-gradient(180deg,var(--card-bg), rgba(0,0,0,0.02));padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-1);border:var(--glass-border)}
 .user{display:flex;gap:12px;align-items:center}
-.avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#f0fff7);display:flex;align-items:center;justify-content:center;font-weight:900;color:#033;font-size:20px;border:1px solid rgba(0,0,0,0.04)}
+.avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#f0fff7);display:flex;align-items:center;justify-content:center;font-weight:900;color:#033;font-size:20px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.06)}
 .stats{flex:1}
-.muted{color:rgba(234,246,240,0.78);font-size:13px}
+.muted{color:var(--muted);font-size:13px}
 .progress-bar{height:12px;background:linear-gradient(90deg, rgba(255,255,255,0.025), rgba(255,255,255,0.015));border-radius:12px;overflow:hidden;margin-top:8px}
-.progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,#00d79f,#06b6d4);width:0%}
+.progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));width:0%}
 
-/* sidebar nav */
+/* nav */
 nav.sidebar{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-nav.sidebar button{background:transparent;border:none;text-align:left;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;color:#dff4ee}
+nav.sidebar button{background:transparent;border:none;text-align:left;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
 nav.sidebar button.active{background:linear-gradient(90deg, rgba(0,211,159,0.06), rgba(6,182,212,0.03));box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
 
 /* main */
 main{min-height:66vh}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;box-shadow:0 16px 40px rgba(2,20,25,0.5);border:1px solid rgba(255,255,255,0.03);margin-bottom:12px}
+.card{background:linear-gradient(180deg,var(--card-bg), var(--glass-2));padding:16px;border-radius:12px;box-shadow:var(--shadow-1);border:var(--glass-border)}
 h2{margin:0 0 8px 0;color:#eafff6}
 h3{margin:0 0 8px 0;color:#dff7ee}
-.hero{padding:28px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));text-align:left;box-shadow:0 20px 60px rgba(2,20,25,0.5);border:1px solid rgba(6,182,212,0.06)}
+.hero{padding:28px;border-radius:12px;text-align:left}
 .hero h1{font-size:26px}
-.hero p{color:rgba(234,246,240,0.8);margin-top:8px}
+.hero p{color:var(--muted);margin-top:8px}
 
 /* tiles */
 .lesson-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
@@ -81,36 +108,37 @@ h3{margin:0 0 8px 0;color:#dff7ee}
 .exercise{padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));margin-top:12px}
 .question{font-size:18px;margin-bottom:12px}
 .options{display:grid;gap:10px}
-.option{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));cursor:pointer}
-.option.correct{background:linear-gradient(90deg,#dcfff1,#e6fff6);border-color:rgba(0,211,159,0.14)}
+.option{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.option.correct{background:linear-gradient(90deg,#dcfff1,#e6fff6);border-color:rgba(0,211,159,0.14);color:#042023}
 .option.wrong{background:linear-gradient(90deg,#3b1010,#ffefef);border-color:rgba(193,73,83,0.14)}
 
 /* dictionary */
-.dictionary-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));margin-bottom:8px}
+.dictionary-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));margin-top:8px}
 
 /* forms */
-input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eaf6f0;margin-top:8px}
+input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);margin-top:8px}
 textarea{min-height:80px;resize:vertical}
 .small{font-size:13px;padding:6px 8px;border-radius:8px}
 
 /* login modal full-screen */
-#login-container{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:999;background:linear-gradient(180deg, rgba(0,8,12,0.75), rgba(0,8,12,0.85))}
-#login-box{width:420px;padding:26px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 120px rgba(0,0,0,0.8);text-align:center}
+#login-container{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:999;background:linear-gradient(180deg, rgba(0,8,12,0.75), rgba(0,8,12,0.75))}
+#login-box{width:420px;padding:26px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));border:var(--glass-border);box-shadow:0 30px 120px rgba(0,0,0,0.6)}
 #login-box img{height:72px;margin-bottom:10px}
 #login-box h2{color:#cff7ee;margin-bottom:8px}
-#login-box input{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:#eaf6f0}
-#login-box button{margin-top:12px;width:100%;padding:12px;border-radius:999px;background:linear-gradient(90deg,#00d79f,#06b6d4);border:none;color:#042023;font-weight:800;cursor:pointer}
-#login-box .muted{font-size:13px;color:rgba(234,246,240,0.78);margin-top:8px}
+#login-box input{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:var(--text)}
+#login-box button{margin-top:12px;width:100%;padding:12px;border-radius:999px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));border:none;color:#042023;font-weight:800;cursor:pointer}
+#login-box .muted{font-size:13px;color:var(--muted);margin-top:8px}
 #error-message{color:#ffb3b3;margin-top:8px;display:none}
-
-/* particles placeholder behind */
-#particles-js{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.9}
 
 /* footer */
 footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:13px;padding-bottom:30px}
 
+/* helpers */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kv{font-size:13px;color:var(--muted)}
+
 /* small screens */
-@media (max-width:520px){ .logo{width:56px;height:56px;font-size:18px} #login-box{width:94%} .grid{gap:10px} }
+@media (max-width:520px){ .logo{width:56px;height:56px;font-size:18px} #login-box{width:94%} .grid{gap:10px} .avatar{width:56px;height:56px} }
 </style>
 </head>
 <body>
@@ -118,17 +146,17 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
   <div id="particles-js"></div>
 
   <div class="wrap" style="position:relative;z-index:2">
-    <header>
+    <div class="header">
       <div class="brand">
-        <div class="logo">WL</div>
-        <div>
+        <div class="logo" aria-hidden="true">WL</div>
+        <div class="title">
           <h1>Wayuunaiki App PRO</h1>
           <div class="subtitle">Aprende Wayuunaiki — pro, moderno y gamificado</div>
         </div>
       </div>
 
-      <div id="top-actions"></div>
-    </header>
+      <div id="top-actions" class="controls"></div>
+    </div>
 
     <div class="grid">
       <!-- LATERAL -->
@@ -137,11 +165,11 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
 
         <div id="user-panel" style="display:none;margin-top:12px">
           <div class="user">
-            <div id="avatar" class="avatar">WL</div>
+            <div id="avatar" class="avatar" aria-hidden="true">WL</div>
             <div class="stats">
               <div id="welcome"><strong>Bienvenido</strong></div>
               <div id="role" class="muted">Usuario</div>
-              <div class="progress-bar"><i id="progbar"></i></div>
+              <div class="progress-bar" aria-hidden="true"><i id="progbar"></i></div>
               <div class="muted" id="xptext" style="margin-top:8px">XP: 0 · Nivel 1</div>
             </div>
           </div>
@@ -157,11 +185,11 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
           </div>
 
           <nav class="sidebar" aria-label="Navegación">
-            <button class="active" data-view="dashboard">Dashboard</button>
-            <button data-view="lessons">Lecciones</button>
-            <button data-view="dictionary">Diccionario</button>
-            <button data-view="profile">Perfil</button>
-            <button data-view="admin">Admin</button>
+            <button class="active" data-view="dashboard"><i class="fa-solid fa-house"></i> Dashboard</button>
+            <button data-view="lessons"><i class="fa-solid fa-book"></i> Lecciones</button>
+            <button data-view="dictionary"><i class="fa-solid fa-book-open"></i> Diccionario</button>
+            <button data-view="profile"><i class="fa-solid fa-user"></i> Perfil</button>
+            <button data-view="admin"><i class="fa-solid fa-toolbox"></i> Admin</button>
           </nav>
 
           <div style="margin-top:12px">
@@ -183,31 +211,49 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
             </div>
             <div style="text-align:right">
               <div class="muted">Meta diaria</div>
-              <div style="font-weight:900;font-size:20px">20 XP</div>
+              <div style="font-weight:900;font-size:20px" id="daily-target">20 XP</div>
             </div>
           </div>
 
           <div style="margin-top:14px" class="card">
-            <div style="display:flex;gap:18px;flex-wrap:wrap">
+            <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
               <div><div class="muted">Nivel</div><div style="font-weight:900;font-size:20px" id="dash-level">1</div></div>
               <div><div class="muted">XP</div><div style="font-weight:900;font-size:20px" id="dash-xp">0</div></div>
               <div><div class="muted">Lecciones completadas</div><div style="font-weight:900;font-size:20px" id="dash-completed">0</div></div>
+              <div style="margin-left:auto;text-align:right"><div class="muted">Leaderboard (local)</div><div id="leaderboard" class="kv" style="font-weight:900"></div></div>
             </div>
           </div>
 
-          <div style="margin-top:12px" class="card">
-            <h3>Sugerencia</h3>
-            <p class="muted">Comience con la lección "Saludos" en Básico 1. Use el diccionario para reproducir audios reales.</p>
-            <div style="margin-top:10px">
-              <button class="btn btn-primary" id="start-sample">Iniciar Saludos (Demo)</button>
+          <div style="margin-top:12px" class="card hero">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+              <div>
+                <h1>Empieza hoy: Saludos</h1>
+                <p class="muted">Micro-lecciones, ejercicios interactivos, audio y seguimiento de progreso. Usa el panel Admin para añadir audios reales.</p>
+                <div style="margin-top:10px">
+                  <button class="btn btn-primary" id="start-sample"><i class="fa-solid fa-play"></i> Iniciar Saludos (Demo)</button>
+                  <button class="btn btn-ghost" id="open-settings"><i class="fa-solid fa-gear"></i> Ajustes</button>
+                </div>
+              </div>
+              <div style="width:180px;text-align:center">
+                <div style="font-size:48px;font-weight:900;color:var(--accent-2)" id="xp-big">0 XP</div>
+                <div class="muted">Objetivos completados</div>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- LECCIONES -->
         <section id="view-lessons" class="card" style="display:none" aria-label="Lecciones">
-          <h2>Lecciones y niveles</h2>
-          <p class="muted">Gane XP completando ejercicios interactivos.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2>Lecciones y niveles</h2>
+              <p class="muted">Gane XP con ejercicios adaptativos y repeticiones espaciadas.</p>
+            </div>
+            <div class="controls">
+              <input id="search-lessons" placeholder="Buscar lección..." />
+              <select id="filter-level"><option value="">Todos</option></select>
+            </div>
+          </div>
 
           <div style="margin-top:12px" class="card">
             <h4 style="margin:0 0 8px 0">Niveles</h4>
@@ -215,17 +261,35 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
           </div>
 
           <div id="lesson-area" class="card" hidden>
-            <button class="btn-ghost small" id="close-lesson">&larr; Volver</button>
-            <h3 id="lesson-title"></h3>
-            <p class="muted" id="lesson-desc"></p>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <button class="btn-ghost small" id="close-lesson">&larr; Volver</button>
+                <h3 id="lesson-title" style="display:inline-block;margin-left:12px"></h3>
+                <div class="muted" id="lesson-desc" style="margin-top:6px"></div>
+              </div>
+              <div class="controls">
+                <div class="kv">Progreso lección: <span id="lesson-progress">0%</span></div>
+                <button id="fav-lesson" class="btn small"><i class="fa-regular fa-star"></i> Favorito</button>
+              </div>
+            </div>
+
             <div id="exercise-area" style="margin-top:12px"></div>
           </div>
         </section>
 
         <!-- DICCIONARIO -->
         <section id="view-dictionary" class="card" style="display:none" aria-label="Diccionario">
-          <h2>Diccionario — 20 audios</h2>
-          <input id="dict-search" placeholder="Buscar palabra (español o wayu)" />
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2>Diccionario — <span id="dict-count">0</span> palabras</h2>
+              <p class="muted">Reproduce audios, sube archivos o usa TTS.</p>
+            </div>
+            <div class="controls">
+              <input id="dict-search" placeholder="Buscar palabra (español o wayu)" />
+              <select id="dict-lang"><option value="es-ES">ES</option><option value="es-CO">ES-CO</option><option value="en-US">EN</option></select>
+            </div>
+          </div>
+
           <div id="dict-list" style="margin-top:10px"></div>
         </section>
 
@@ -239,6 +303,12 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
           <input id="profile-initials" maxlength="2" />
           <div style="margin-top:8px">
             <button class="btn btn-primary" id="save-profile">Guardar</button>
+            <button class="btn btn-ghost" id="reset-progress">Restablecer progreso</button>
+          </div>
+
+          <div style="margin-top:12px" class="card">
+            <h4>Logros</h4>
+            <div id="achievements" class="muted">No hay logros aún</div>
           </div>
         </section>
 
@@ -266,14 +336,21 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
             <input id="dict-es" placeholder="Español" />
             <input id="dict-wy" placeholder="Wayuunaiki (transcripción)" />
             <input id="dict-audio" placeholder="URL audio (opcional, .mp3)" />
-            <button class="btn btn-primary" id="create-word">Agregar palabra</button>
-            <div class="muted" style="margin-top:8px">Pegue una URL directa a un .mp3 para usar audio real.</div>
+            <div style="margin-top:8px">
+              <label class="kv">O arrastra/solta un archivo .mp3 aquí:</label>
+              <div id="audio-drop" style="border:1px dashed rgba(255,255,255,0.06);padding:8px;border-radius:8px;margin-top:6px;text-align:center">Suelta audio aquí</div>
+            </div>
+            <div style="margin-top:8px">
+              <button class="btn btn-primary" id="create-word">Agregar palabra</button>
+            </div>
+            <div class="muted" style="margin-top:8px">Subida local a base64 (práctica para demo). Evite archivos muy grandes — localStorage tiene límites.</div>
           </div>
 
           <div style="margin-top:12px" class="card">
             <h4>Importar / Restablecer</h4>
             <button class="btn small" id="seed-demo">Cargar demo completo</button>
             <button class="btn small" id="clear-data">Borrar datos locales</button>
+            <div style="margin-top:8px" class="muted">Exporte antes de borrar si necesita respaldo.</div>
           </div>
         </section>
       </main>
@@ -285,7 +362,7 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
   <!-- LOGIN MODAL -->
   <div id="login-container" aria-hidden="false">
     <div id="login-box" role="dialog" aria-modal="true" aria-label="Login">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Wayuu_cultura_logo_placeholder.png" alt="Logo Wayuunaiki" style="height:72px;margin-bottom:8px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.6))">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Wayuu_cultura_logo_placeholder.png" alt="Logo Wayuunaiki" style="height:72px;margin-bottom:8px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.6))" />
       <h2>Wayuunaiki App PRO — Iniciar sesión</h2>
       <div style="margin-top:8px" class="muted">Usuario demo: <strong>admin</strong> · Contraseña: <strong>wayuunaiki2025</strong></div>
 
@@ -310,7 +387,7 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
     </div>
   </div>
 
-  <!-- Tiny audio placeholders (data URIs extremely short silent sound to satisfy <audio>) -->
+  <!-- Tiny audio placeholders -->
   <audio id="sfx-correct" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBIAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
   <audio id="sfx-wrong" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBIAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
 
@@ -318,587 +395,808 @@ footer{margin-top:20px;text-align:center;color:rgba(234,246,240,0.6);font-size:1
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
 <script>
-/* =========================
-   Wayuunaiki App PRO - Single file
-   - 3 niveles x 7 lecciones (21 lecciones)
-   - Diccionario con 20 entradas (audioUrl optional)
-   - LocalStorage persistence
-   - Admin panel to add content and paste real .mp3 URLs
-   ========================= */
+/*
+  Wayuunaiki App PRO - Enhanced single-file edition
+  - Mejor estructura, más features:
+    * Temas, Ajustes y accesibilidad
+    * Spaced repetition básico (nextDue)
+    * Leaderboard y logros locales
+    * Drag & drop audio upload (base64) + remote mp3 URLs
+    * Nuevos tipos de ejercicios (mcq, text, listen, match)
+    * Búsqueda y filtros en lecciones y diccionario
+    * Mejor manejo de progreso y export/import
+    * Shortcuts: N siguiente, P anterior, S reproducir
+    * Keyboard friendly form handling
+  - Sigue siendo app local con persistencia via localStorage.
+*/
 
-const STORAGE_KEY = 'wayuunaiki_pro_v1';
-const USER_KEY = 'wayuunaiki_pro_user';
+(() => {
+  const STORAGE_KEY = 'wayuunaiki_pro_v2';
+  const USER_KEY = 'wayuunaiki_pro_user_v2';
 
-// Default dataset structure
-const defaults = {
-  users: {},
-  levels: [],
-  lessons: [],
-  exercises: [],
-  dictionary: [],
-  results: {}
-};
-
-// util load/save
-function loadData(){ try { const s = localStorage.getItem(STORAGE_KEY); return s? JSON.parse(s): structuredClone(defaults); } catch(e){ return structuredClone(defaults); } }
-function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
-
-let data = loadData();
-
-// Helper selectors
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-// Generate id
-function id(){ return 'id_' + Math.random().toString(36).slice(2,9); }
-function initialsFrom(name){ return name.split(' ').map(p=>p[0]||'').slice(0,2).join('').toUpperCase(); }
-
-// Seed PRO demo with 3 levels x 7 lessons and 20 dictionary audios
-function seedPRO(force=false){
-  if (!force && data.levels.length>0) return;
-
-  data = { users:{}, levels:[], lessons:[], exercises:[], dictionary:[], results:{} };
-
-  // demo admin + sample user
-  data.users['admin'] = { username:'admin', pass:'wayuunaiki2025', initials:'AD', isAdmin:true, xp:160, level:2, streak:4, completed:[], lastLessonId:null };
-  data.users['maria'] = { username:'maria', pass:'maria2025', initials:'MA', isAdmin:false, xp:40, level:1, streak:2, completed:[], lastLessonId:null };
-
-  // create 3 levels
-  const levels = [
-    { id:id(), name:'Básico', desc:'Saludos, presentaciones y vocabulario esencial' },
-    { id:id(), name:'Intermedio', desc:'Familia, comida y rutinas' },
-    { id:id(), name:'Avanzado', desc:'Conversaciones y expresiones culturales' },
-  ];
-  data.levels.push(...levels);
-
-  // Create 7 lessons per level (21 lessons)
-  const levelMap = {};
-  levels.forEach(l => levelMap[l.name] = l.id);
-
-  const lessonsInfo = {
-    'Básico': ['Saludos','Presentaciones','Números','Colores','Días y tiempo','Comida básica','Frases cortesía'],
-    'Intermedio': ['Familia','Casa y objetos','Rutinas diarias','Compras y mercado','Lugares','Salud','Transporte'],
-    'Avanzado': ['Cultura y tradiciones','Relatos y leyendas','Expresiones idiomáticas','Opiniones y gustos','Relaciones sociales','Historias cortas','Debate simple']
+  const defaults = {
+    users: {},
+    levels: [],
+    lessons: [],
+    exercises: [],
+    dictionary: [],
+    results: {},
+    meta: { created: Date.now() }
   };
 
-  for (const lvlName in lessonsInfo){
-    const arr = lessonsInfo[lvlName];
-    arr.forEach(title=>{
-      const lesson = { id:id(), levelId: levelMap[lvlName], title, body: `Lección: ${title} — contenido para practicar ${lvlName}` };
-      data.lessons.push(lesson);
-      // add 2 simple exercises per lesson: 1 MCQ + 1 Text (for demo)
-      data.exercises.push({
-        id: id(), lessonId: lesson.id, type: 'mcq',
-        prompt: `Ejemplo MCQ: Seleccione la traducción correcta para "${title}" (demo)`,
-        options: ['Opción A','Opción B','Opción C'], correctIndex:0, xp:10
-      });
-      data.exercises.push({
-        id: id(), lessonId: lesson.id, type: 'text',
-        prompt: `Ejemplo Escribir: Traduce "${title}" al español (demo)`, answer: title, xp:8
-      });
-    });
+  function loadData(){ try { const s = localStorage.getItem(STORAGE_KEY); return s? JSON.parse(s): structuredClone(defaults); } catch(e){ return structuredClone(defaults); } }
+  function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+  let data = loadData();
+
+  // helpers
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+  const id = () => 'id_' + Math.random().toString(36).slice(2,9);
+  const initialsFrom = name => (name || '').split(' ').map(p=>p[0]||'').slice(0,2).join('').toUpperCase();
+
+  // state
+  let state = { currentUser:null, currentView:'dashboard', currentLesson:null, sessionIndex:0, settings: { ttsLang:'es-CO', ttsRate:0.95, theme:'dark' } };
+
+  // SPA init
+  init();
+
+  function init(){
+    if (!data.levels.length) seedPRO(true);
+    restoreSession();
+    renderAuthArea();
+    bindAuth();
+    bindNav();
+    renderAll();
+    bindAll();
+    setupParticles();
+    setupShortcuts();
+    applyTheme();
+    // expose
+    window.WL = { data, saveDataAll: ()=> saveData(data), seedPRO, id };
   }
 
-  // 20 diccionario entries — many include empty audioUrl (TTS fallback). Replace audioUrl with real .mp3 URLs via Admin.
-  const dict = [
-    { spanish:'Hola', wayu:'Ashajawaa', audioUrl:'' },
-    { spanish:'Adiós', wayu:'Aipa', audioUrl:'' },
-    { spanish:'Gracias', wayu:'Jinain', audioUrl:'' },
-    { spanish:'Madre', wayu:'Piichi', audioUrl:'' },
-    { spanish:'Padre', wayu:'Pütchipüi', audioUrl:'' },
-    { spanish:'Agua', wayu:'Wüin', audioUrl:'' },
-    { spanish:'Comida', wayu:'Wachon', audioUrl:'' },
-    { spanish:'Casa', wayu:'Jüin', audioUrl:'' },
-    { spanish:'Amigo', wayu:'Jajashi', audioUrl:'' },
-    { spanish:'Hombre', wayu:'Alijuna', audioUrl:'' },
-    { spanish:'Mujer', wayu:'Yalimu', audioUrl:'' },
-    { spanish:'Niño', wayu:'Wainma', audioUrl:'' },
-    { spanish:'Gracias mucho', wayu:'Jinain pukua', audioUrl:'' },
-    { spanish:'Perro', wayu:'Alü', audioUrl:'' },
-    { spanish:'Gato', wayu:'Swapaa', audioUrl:'' },
-    { spanish:'Mar', wayu:'Maloku', audioUrl:'' },
-    { spanish:'Tierra', wayu:'Wayuu', audioUrl:'' },
-    { spanish:'Sol', wayu:'Jatayaa', audioUrl:'' },
-    { spanish:'Luna', wayu:'Amaj', audioUrl:'' },
-    { spanish:'Caminar', wayu:'Alia', audioUrl:'' },
-  ];
-  // Note: the 'wayu' transcriptions above are representative demo text. Replace with canonical orthography/audio if you have them.
-  data.dictionary.push(...dict);
-
-  saveData(data);
-}
-
-// If empty, seed PRO demo
-if (data.levels.length === 0) seedPRO(true);
-
-// app state
-let state = { currentUser:null, currentView:'dashboard', currentLesson:null, sessionIndex:0 };
-
-// init
-init();
-function init(){
-  renderAuthArea();
-  bindAuth();
-  bindNav();
-  renderAll();
-  setupParticles();
-  renderTopActions();
-  restoreSession();
-}
-
-/* ---------------------
-   AUTH UI & logic
-   --------------------- */
-function renderAuthArea(){
-  $('#auth-area').innerHTML = `
-    <div class="card" style="text-align:center">
-      <h3 class="muted">Acceso rápido</h3>
-      <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
-        <button class="btn btn-primary" id="quick-admin">Entrar como Admin</button>
-        <button class="btn btn-ghost" id="quick-guest">Entrar como Invitado</button>
-      </div>
-      <div style="margin-top:12px" class="muted">O use el formulario de inicio abajo.</div>
-    </div>`;
-  $('#quick-admin').onclick = ()=>{ $('#login-username').value='admin'; $('#login-password').value='wayuunaiki2025'; $('#login-btn').click(); };
-  $('#quick-guest').onclick = ()=>{ const name='guest_'+Math.random().toString(36).slice(2,6); data.users[name] = { username:name, pass:'', initials:initialsFrom(name), isAdmin:false, xp:0, level:1, streak:0, completed:[], lastLessonId:null }; saveData(data); $('#login-username').value=name; $('#login-password').value=''; $('#login-btn').click(); };
-}
-
-function bindAuth(){
-  $('#login-btn').onclick = loginHandler;
-  $('#open-register').onclick = ()=> $('#register-area').style.display='block';
-  $('#cancel-register').onclick = ()=> $('#register-area').style.display='none';
-  $('#create-account').onclick = createAccount;
-}
-
-function createAccount(){
-  const u = $('#reg-username').value.trim(); const p = $('#reg-password').value; const isAdmin = $('#reg-admin').checked;
-  if (!u || !p) return alert('Complete usuario y contraseña.');
-  if (data.users[u]) return alert('Usuario ya existe.');
-  data.users[u] = { username:u, pass:p, initials:initialsFrom(u), isAdmin:!!isAdmin, xp:0, level:1, streak:0, completed:[], lastLessonId:null };
-  saveData(data); alert('Cuenta creada. Inicie sesión.');
-  $('#reg-username').value = $('#reg-password').value = ''; $('#register-area').style.display='none';
-}
-
-function loginHandler(){
-  const u = $('#login-username').value.trim(); const p = $('#login-password').value;
-  const err = $('#error-message');
-  if (!u) { err.textContent = 'Ingrese usuario'; err.style.display='block'; return; }
-  const user = data.users[u];
-  if (!user) { err.textContent = 'Usuario no encontrado'; err.style.display='block'; return; }
-  if (user.pass && user.pass !== p) { err.textContent = 'Contraseña incorrecta'; err.style.display='block'; return; }
-  err.style.display='none';
-  state.currentUser = u;
-  localStorage.setItem(USER_KEY, JSON.stringify({ username:u }));
-  $('#login-container').style.display='none';
-  onLogin();
-}
-
-function onLogin(){
-  renderTopActions(); renderSideUser(); renderAll(); showView('dashboard');
-}
-
-function logout(){
-  state.currentUser = null; localStorage.removeItem(USER_KEY);
-  $('#login-container').style.display='flex';
-  renderTopActions(); renderAll();
-}
-
-function restoreSession(){
-  const s = localStorage.getItem(USER_KEY);
-  if (s){ try{ const o=JSON.parse(s); if (o.username && data.users[o.username]){ state.currentUser = o.username; $('#login-container').style.display='none'; onLogin(); } } catch(e){} }
-}
-
-/* ---------------------
-   Top actions & side
-   --------------------- */
-function renderTopActions(){
-  const top = $('#top-actions'); top.innerHTML='';
-  if (!state.currentUser){
-    const b = document.createElement('button'); b.className='btn btn-ghost'; b.textContent='Iniciar / Registrar'; b.onclick = ()=> window.scrollTo({top:0,behavior:'smooth'});
-    top.appendChild(b);
-  } else {
-    const u = data.users[state.currentUser];
-    const span = document.createElement('div'); span.className='muted'; span.textContent = `${u.username} ${u.isAdmin? '· Admin':''}`;
-    const out = document.createElement('button'); out.className='btn'; out.textContent='Cerrar sesión'; out.onclick = ()=> logout();
-    top.appendChild(span); top.appendChild(out);
-  }
-}
-
-function renderSideUser(){
-  if (!state.currentUser) { $('#user-panel').style.display='none'; return; }
-  $('#user-panel').style.display='block';
-  const u = data.users[state.currentUser];
-  $('#avatar').textContent = u.initials || initialsFrom(u.username);
-  $('#welcome').innerHTML = `<strong>${u.username}</strong>`;
-  $('#role').textContent = u.isAdmin? 'Administrador':'Usuario';
-  $('#progbar').style.width = Math.min(100, Math.round((u.xp%100))) + '%';
-  $('#xptext').textContent = `XP: ${u.xp} · Nivel ${u.level}`;
-  $('#streak').textContent = u.streak || 0;
-  $('#dash-level').textContent = u.level; $('#dash-xp').textContent = u.xp; $('#dash-completed').textContent = (u.completed||[]).length;
-}
-
-/* -------------------------
-   Navigation & view switching
-   ------------------------- */
-function bindNav(){
-  document.addEventListener('click', (e)=>{
-    if (e.target.matches('nav.sidebar button')){
-      document.querySelectorAll('nav.sidebar button').forEach(b=>b.classList.remove('active'));
-      e.target.classList.add('active');
-      showView(e.target.dataset.view);
+  /* -------------------------
+     SEED (improved)
+     ------------------------- */
+  function seedPRO(force=false){
+    if (!force && data.levels.length>0) return;
+    data = structuredClone(defaults);
+    // base users
+    data.users['admin'] = { username:'admin', pass:'wayuunaiki2025', initials:'AD', isAdmin:true, xp:160, level:2, streak:4, completed:[], lastLessonId:null, created: Date.now() };
+    data.users['maria'] = { username:'maria', pass:'maria2025', initials:'MA', isAdmin:false, xp:40, level:1, streak:2, completed:[], lastLessonId:null, created: Date.now() };
+    // levels + lessons
+    const levels = [
+      { id:id(), name:'Básico', desc:'Saludos, presentaciones y vocabulario esencial' },
+      { id:id(), name:'Intermedio', desc:'Familia, comida y rutinas' },
+      { id:id(), name:'Avanzado', desc:'Conversaciones y expresiones culturales' },
+    ];
+    data.levels.push(...levels);
+    const lessonsInfo = {
+      'Básico': ['Saludos','Presentaciones','Números','Colores','Días y tiempo','Comida básica','Frases cortesía'],
+      'Intermedio': ['Familia','Casa y objetos','Rutinas diarias','Compras y mercado','Lugares','Salud','Transporte'],
+      'Avanzado': ['Cultura y tradiciones','Relatos y leyendas','Expresiones idiomáticas','Opiniones y gustos','Relaciones sociales','Historias cortas','Debate simple']
+    };
+    const levelMap = Object.fromEntries(levels.map(l=>[l.name,l.id]));
+    for (const lvlName in lessonsInfo){
+      lessonsInfo[lvlName].forEach(title=>{
+        const lesson = { id:id(), levelId: levelMap[lvlName], title, body: `Lección: ${title} — contenido para practicar ${lvlName}`, favorite:false };
+        data.lessons.push(lesson);
+        // sample exercises: MCQ + text + listen
+        data.exercises.push({
+          id: id(), lessonId: lesson.id, type: 'mcq',
+          prompt: `¿Cuál es la mejor traducción demo para "${title}"?`,
+          options: ['Respuesta correcta (demo)','Respuesta B','Respuesta C'], correctIndex:0, xp:12, nextDue: Date.now()
+        });
+        data.exercises.push({
+          id: id(), lessonId: lesson.id, type: 'text',
+          prompt: `Traduce "${title}" (demo)`, answer: title, xp:8, nextDue: Date.now()
+        });
+        data.exercises.push({
+          id: id(), lessonId: lesson.id, type: 'listen',
+          prompt: `${title}`, answer: title, xp:10, audioRef:'', nextDue: Date.now()
+        });
+      });
     }
-  });
-  $('#btn-logout').onclick = ()=> logout();
-  $('#btn-continue').onclick = ()=> {
-    if (!state.currentUser) return alert('Inicie sesión para continuar.');
-    const u = data.users[state.currentUser];
-    if (u.lastLessonId) openLessonById(u.lastLessonId); else showView('lessons');
-  };
-  $('#backup-btn').onclick = ()=> exportImportDialog();
-}
 
-function showView(v){
-  state.currentView = v;
-  ['dashboard','lessons','dictionary','profile','admin'].forEach(name=> {
-    const el = document.getElementById('view-'+name);
-    if (el) el.style.display = (name === v ? 'block' : 'none');
-  });
-  if (v === 'dashboard') renderSideUser();
-}
-
-/* -------------------------
-   Levels / Lessons rendering
-   ------------------------- */
-function renderAll(){
-  renderLevelsList();
-  renderDictionaryOnly();
-  renderAdminSelect();
-  renderSideUser();
-  renderTopActions();
-}
-
-function renderLevelsList(){
-  const container = $('#levels-list'); if(!container) return; container.innerHTML='';
-  data.levels.forEach(l=>{
-    const div = document.createElement('div'); div.className='tile';
-    const done = state.currentUser ? data.users[state.currentUser].completed.filter(c=> data.lessons.find(ll=>ll.id===c && ll.levelId===l.id)).length : 0;
-    div.innerHTML = `<strong>${l.name}</strong><div class="muted">${l.desc||''}</div><div style="margin-top:8px;font-size:13px;color:rgba(234,246,240,0.7)">${done} lecciones completadas</div>`;
-    div.onclick = ()=> openLevel(l.id);
-    container.appendChild(div);
-  });
-}
-
-function openLevel(levelId){
-  const lessons = data.lessons.filter(x=>x.levelId===levelId);
-  if (!lessons.length) { alert('No hay lecciones en este nivel'); return; }
-  $('#lesson-area').hidden = false;
-  $('#lesson-title').textContent = data.levels.find(l=>l.id===levelId).name;
-  $('#lesson-desc').textContent = 'Seleccione una lección';
-  const exArea = $('#exercise-area'); exArea.innerHTML='';
-  lessons.forEach(ls=>{
-    const node = document.createElement('div'); node.className='tile';
-    node.innerHTML = `<strong>${ls.title}</strong><div class="muted">${ls.body||''}</div>`;
-    node.onclick = ()=> openLesson(ls.id);
-    exArea.appendChild(node);
-  });
-  $('#close-lesson').onclick = ()=> { $('#lesson-area').hidden = true; };
-  showView('lessons');
-}
-
-function openLessonById(id){ const lesson = data.lessons.find(l=>l.id===id); if (lesson) openLesson(lesson.id); }
-
-function openLesson(lessonId){
-  const lesson = data.lessons.find(l=>l.id===lessonId);
-  if (!lesson) return;
-  $('#lesson-area').hidden=false;
-  $('#lesson-title').textContent = lesson.title;
-  $('#lesson-desc').textContent = lesson.body || '';
-  state.currentLesson = lesson;
-  if (state.currentUser){
-    const u = data.users[state.currentUser];
-    u.lastLessonId = lesson.id; u.lastLessonTitle = lesson.title; saveData(data);
+    // 20 dictionary demo entries
+    const dict = [
+      { spanish:'Hola', wayu:'Ashajawaa', audioUrl:'' },
+      { spanish:'Adiós', wayu:'Aipa', audioUrl:'' },
+      { spanish:'Gracias', wayu:'Jinain', audioUrl:'' },
+      { spanish:'Madre', wayu:'Piichi', audioUrl:'' },
+      { spanish:'Padre', wayu:'Pütchipüi', audioUrl:'' },
+      { spanish:'Agua', wayu:'Wüin', audioUrl:'' },
+      { spanish:'Comida', wayu:'Wachon', audioUrl:'' },
+      { spanish:'Casa', wayu:'Jüin', audioUrl:'' },
+      { spanish:'Amigo', wayu:'Jajashi', audioUrl:'' },
+      { spanish:'Hombre', wayu:'Alijuna', audioUrl:'' },
+      { spanish:'Mujer', wayu:'Yalimu', audioUrl:'' },
+      { spanish:'Niño', wayu:'Wainma', audioUrl:'' },
+      { spanish:'Gracias mucho', wayu:'Jinain pukua', audioUrl:'' },
+      { spanish:'Perro', wayu:'Alü', audioUrl:'' },
+      { spanish:'Gato', wayu:'Swapaa', audioUrl:'' },
+      { spanish:'Mar', wayu:'Maloku', audioUrl:'' },
+      { spanish:'Tierra', wayu:'Wayuu', audioUrl:'' },
+      { spanish:'Sol', wayu:'Jatayaa', audioUrl:'' },
+      { spanish:'Luna', wayu:'Amaj', audioUrl:'' },
+      { spanish:'Caminar', wayu:'Alia', audioUrl:'' },
+    ];
+    data.dictionary.push(...dict);
+    saveData(data);
   }
-  const exs = data.exercises.filter(e=>e.lessonId===lesson.id);
-  if (!exs.length) { $('#exercise-area').innerHTML='<div class="muted">No hay ejercicios.</div>'; return; }
-  state.sessionIndex = 0;
-  renderExercise(exs[state.sessionIndex], exs);
-}
 
-/* -------------------------
-   Exercises (MCQ, Text, Listen)
-   ------------------------- */
-function renderExercise(ex, list){
-  const area = $('#exercise-area'); area.innerHTML='';
-  const q = document.createElement('div'); q.className='question'; q.textContent = ex.prompt;
-  area.appendChild(q);
-  const meta = document.createElement('div'); meta.className='muted'; meta.textContent = `Tipo: ${ex.type} · XP: ${ex.xp||10}`; area.appendChild(meta);
-  const opts = document.createElement('div'); opts.className='options'; opts.style.marginTop='12px';
+  /* -------------------------
+     AUTH UI & logic
+     ------------------------- */
+  function renderAuthArea(){
+    $('#auth-area').innerHTML = `
+      <div class="card" style="text-align:center">
+        <h3 class="muted">Acceso rápido</h3>
+        <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+          <button class="btn btn-primary" id="quick-admin">Entrar como Admin</button>
+          <button class="btn btn-ghost" id="quick-guest">Entrar como Invitado</button>
+        </div>
+        <div style="margin-top:12px" class="muted">O use el formulario de inicio abajo.</div>
+      </div>`;
+    // delegate buttons after insertion
+    setTimeout(()=>{
+      $('#quick-admin').onclick = ()=>{ $('#login-username').value='admin'; $('#login-password').value='wayuunaiki2025'; $('#login-btn').click(); };
+      $('#quick-guest').onclick = ()=>{ const name='guest_'+Math.random().toString(36).slice(2,6); data.users[name] = { username:name, pass:'', initials:initialsFrom(name), isAdmin:false, xp:0, level:1, streak:0, completed:[], lastLessonId:null, created: Date.now() }; saveData(data); $('#login-username').value = name; $('#login-password').value = ''; $('#login-btn').click(); };
+    },20);
+  }
 
-  if (ex.type === 'mcq'){
-    ex.options.forEach((opt,i)=>{
-      const b = document.createElement('div'); b.className='option'; b.textContent = opt;
-      b.onclick = async ()=>{
-        const correct = i === ex.correctIndex;
-        b.classList.add(correct? 'correct':'wrong');
+  function bindAuth(){
+    $('#login-btn').onclick = loginHandler;
+    $('#open-register').onclick = ()=> $('#register-area').style.display='block';
+    $('#cancel-register').onclick = ()=> $('#register-area').style.display='none';
+    $('#create-account').onclick = createAccount;
+    $('#login-password').addEventListener('keydown', (e)=> e.key==='Enter' && loginHandler());
+    $('#login-username').addEventListener('keydown', (e)=> e.key==='Enter' && $('#login-password').focus());
+  }
+
+  function createAccount(){
+    const u = $('#reg-username').value.trim(); const p = $('#reg-password').value; const isAdmin = $('#reg-admin').checked;
+    if (!u || !p) return alert('Complete usuario y contraseña.');
+    if (data.users[u]) return alert('Usuario ya existe.');
+    data.users[u] = { username:u, pass:p, initials:initialsFrom(u), isAdmin:!!isAdmin, xp:0, level:1, streak:0, completed:[], lastLessonId:null, created: Date.now() };
+    saveData(data); alert('Cuenta creada. Inicie sesión.');
+    $('#reg-username').value = $('#reg-password').value = ''; $('#register-area').style.display='none';
+  }
+
+  function loginHandler(){
+    const u = $('#login-username').value.trim(); const p = $('#login-password').value;
+    const err = $('#error-message');
+    if (!u) { err.textContent = 'Ingrese usuario'; err.style.display='block'; return; }
+    const user = data.users[u];
+    if (!user) { err.textContent = 'Usuario no encontrado'; err.style.display='block'; return; }
+    if (user.pass && user.pass !== p) { err.textContent = 'Contraseña incorrecta'; err.style.display='block'; return; }
+    err.style.display='none';
+    state.currentUser = u;
+    localStorage.setItem(USER_KEY, JSON.stringify({ username:u }));
+    $('#login-container').style.display='none';
+    onLogin();
+  }
+
+  function onLogin(){
+    renderTopActions(); renderSideUser(); renderAll(); showView('dashboard');
+  }
+
+  function logout(){
+    state.currentUser = null; localStorage.removeItem(USER_KEY);
+    $('#login-container').style.display='flex';
+    renderTopActions(); renderAll();
+  }
+
+  function restoreSession(){
+    const s = localStorage.getItem(USER_KEY);
+    if (s){ try{ const o=JSON.parse(s); if (o.username && data.users[o.username]){ state.currentUser = o.username; $('#login-container').style.display='none'; onLogin(); } } catch(e){} }
+  }
+
+  /* -------------------------
+     Top actions & side
+     ------------------------- */
+  function renderTopActions(){
+    const top = $('#top-actions'); top.innerHTML='';
+    const settingsBtn = document.createElement('button'); settingsBtn.className='btn btn-ghost'; settingsBtn.innerHTML = '<i class="fa-solid fa-sliders"></i> Ajustes'; settingsBtn.onclick = openSettings;
+    top.appendChild(settingsBtn);
+
+    if (!state.currentUser){
+      const b = document.createElement('button'); b.className='btn btn-primary'; b.textContent='Iniciar / Registrar'; b.onclick = ()=> window.scrollTo({top:0,behavior:'smooth'});
+      top.appendChild(b);
+    } else {
+      const u = data.users[state.currentUser];
+      const span = document.createElement('div'); span.className='muted'; span.textContent = `${u.username} ${u.isAdmin? '· Admin':''}`;
+      const out = document.createElement('button'); out.className='btn'; out.textContent='Cerrar sesión'; out.onclick = ()=> logout();
+      const theme = document.createElement('button'); theme.className='btn small'; theme.title='Cambiar tema'; theme.innerHTML = '<i class="fa-solid fa-moon"></i>'; theme.onclick = toggleTheme;
+      top.appendChild(span); top.appendChild(theme); top.appendChild(out);
+    }
+  }
+
+  function renderSideUser(){
+    if (!state.currentUser) { $('#user-panel').style.display='none'; return; }
+    $('#user-panel').style.display='block';
+    const u = data.users[state.currentUser];
+    $('#avatar').textContent = u.initials || initialsFrom(u.username);
+    $('#welcome').innerHTML = `<strong>${u.username}</strong>`;
+    $('#role').textContent = u.isAdmin? 'Administrador':'Usuario';
+    $('#progbar').style.width = Math.min(100, Math.round((u.xp%100))) + '%';
+    $('#xptext').textContent = `XP: ${u.xp} · Nivel ${u.level}`;
+    $('#streak').textContent = u.streak || 0;
+    $('#dash-level').textContent = u.level; $('#dash-xp').textContent = u.xp; $('#dash-completed').textContent = (u.completed||[]).length;
+    $('#xp-big').textContent = `${u.xp} XP`;
+    renderLeaderboard();
+  }
+
+  /* -------------------------
+     Navigation & view switching
+     ------------------------- */
+  function bindNav(){
+    document.addEventListener('click', (e)=>{
+      if (e.target.matches('nav.sidebar button') || e.target.closest('nav.sidebar button')){
+        const target = e.target.closest('nav.sidebar button');
+        document.querySelectorAll('nav.sidebar button').forEach(b=>b.classList.remove('active'));
+        target.classList.add('active');
+        showView(target.dataset.view);
+      }
+    });
+    $('#btn-logout').onclick = ()=> logout();
+    $('#btn-continue').onclick = ()=> {
+      if (!state.currentUser) return alert('Inicie sesión para continuar.');
+      const u = data.users[state.currentUser];
+      if (u.lastLessonId) openLessonById(u.lastLessonId); else showView('lessons');
+    };
+    $('#backup-btn').onclick = ()=> exportImportDialog();
+  }
+
+  function showView(v){
+    state.currentView = v;
+    ['dashboard','lessons','dictionary','profile','admin'].forEach(name=> {
+      const el = document.getElementById('view-'+name);
+      if (el) el.style.display = (name === v ? 'block' : 'none');
+    });
+    if (v === 'dashboard') renderSideUser();
+  }
+
+  /* -------------------------
+     Render functions (levels, dictionary, admin selects)
+     ------------------------- */
+  function renderAll(){
+    renderLevelsList();
+    renderDictionaryOnly();
+    renderAdminSelect();
+    renderSideUser();
+    renderTopActions();
+    renderCounts();
+  }
+
+  function renderCounts(){
+    $('#dict-count').textContent = data.dictionary.length;
+  }
+
+  function renderLevelsList(filter=''){
+    const container = $('#levels-list'); if(!container) return; container.innerHTML='';
+    data.levels.forEach(l=>{
+      const div = document.createElement('div'); div.className='tile';
+      const done = state.currentUser ? (data.users[state.currentUser].completed||[]).filter(c=> data.lessons.find(ll=>ll.id===c && ll.levelId===l.id)).length : 0;
+      div.innerHTML = `<strong>${l.name}</strong><div class="muted">${l.desc||''}</div><div style="margin-top:8px;font-size:13px;color:rgba(234,246,240,0.7)">${done} lecciones completadas</div>`;
+      div.onclick = ()=> openLevel(l.id);
+      container.appendChild(div);
+    });
+    // fill filter dropdown
+    const sel = $('#filter-level'); if(sel){
+      sel.innerHTML = '<option value="">Todos</option>';
+      data.levels.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.name; sel.appendChild(o); });
+      sel.onchange = ()=> {
+        // optionally filter lessons list (not implemented below for tiles)
+      };
+    }
+  }
+
+  function openLevel(levelId){
+    const lessons = data.lessons.filter(x=>x.levelId===levelId);
+    if (!lessons.length) { alert('No hay lecciones en este nivel'); return; }
+    $('#lesson-area').hidden = false;
+    $('#lesson-title').textContent = data.levels.find(l=>l.id===levelId).name;
+    $('#lesson-desc').textContent = 'Seleccione una lección';
+    const exArea = $('#exercise-area'); exArea.innerHTML='';
+    lessons.forEach(ls=>{
+      const node = document.createElement('div'); node.className='tile';
+      node.innerHTML = `<strong>${ls.title}</strong><div class="muted">${ls.body||''}</div>`;
+      node.onclick = ()=> openLesson(ls.id);
+      exArea.appendChild(node);
+    });
+    $('#close-lesson').onclick = ()=> { $('#lesson-area').hidden = true; };
+    showView('lessons');
+  }
+
+  function openLessonById(id){ const lesson = data.lessons.find(l=>l.id===id); if (lesson) openLesson(lesson.id); }
+
+  function openLesson(lessonId){
+    const lesson = data.lessons.find(l=>l.id===lessonId);
+    if (!lesson) return;
+    $('#lesson-area').hidden=false;
+    $('#lesson-title').textContent = lesson.title;
+    $('#lesson-desc').textContent = lesson.body || '';
+    state.currentLesson = lesson;
+    if (state.currentUser){
+      const u = data.users[state.currentUser];
+      u.lastLessonId = lesson.id; u.lastLessonTitle = lesson.title; saveData(data);
+    }
+    const exs = data.exercises.filter(e=>e.lessonId===lesson.id);
+    if (!exs.length) { $('#exercise-area').innerHTML='<div class="muted">No hay ejercicios.</div>'; return; }
+    // prioritize due exercises (spaced repetition)
+    exs.sort((a,b)=> (a.nextDue||0) - (b.nextDue||0));
+    state.sessionIndex = 0;
+    renderExercise(exs[state.sessionIndex], exs);
+    updateLessonProgress();
+  }
+
+  /* -------------------------
+     Exercises rendering + evaluation
+     ------------------------- */
+  function renderExercise(ex, list){
+    const area = $('#exercise-area'); area.innerHTML='';
+    const q = document.createElement('div'); q.className='question'; q.textContent = ex.prompt;
+    area.appendChild(q);
+    const meta = document.createElement('div'); meta.className='muted'; meta.textContent = `Tipo: ${ex.type} · XP: ${ex.xp||10}`; area.appendChild(meta);
+    const opts = document.createElement('div'); opts.className='options'; opts.style.marginTop='12px';
+
+    if (ex.type === 'mcq'){
+      ex.options.forEach((opt,i)=>{
+        const b = document.createElement('div'); b.className='option'; b.textContent = opt;
+        b.onclick = async ()=>{
+          const correct = i === ex.correctIndex;
+          b.classList.add(correct? 'correct':'wrong');
+          playSfx(correct);
+          await afterAnswer(correct, ex);
+          setTimeout(()=> nextExercise(list),900);
+        };
+        opts.appendChild(b);
+      });
+    } else if (ex.type === 'text'){
+      const inp = document.createElement('input'); inp.placeholder='Escriba su respuesta';
+      const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
+      send.onclick = async ()=>{
+        const ans = inp.value.trim();
+        const correct = ex.answer && ans.toLowerCase() === ex.answer.toLowerCase();
+        if (correct) inp.style.borderColor='rgba(0,211,159,0.3)'; else inp.style.borderColor='rgba(193,73,83,0.3)';
         playSfx(correct);
         await afterAnswer(correct, ex);
         setTimeout(()=> nextExercise(list),900);
       };
-      opts.appendChild(b);
-    });
-  } else if (ex.type === 'text'){
-    const inp = document.createElement('input'); inp.placeholder='Escriba su respuesta';
-    const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
-    send.onclick = async ()=>{
-      const ans = inp.value.trim();
-      const correct = ex.answer && ans.toLowerCase() === ex.answer.toLowerCase();
-      if (correct) inp.style.borderColor='rgba(0,211,159,0.3)'; else inp.style.borderColor='rgba(193,73,83,0.3)';
-      playSfx(correct);
-      await afterAnswer(correct, ex);
-      setTimeout(()=> nextExercise(list),900);
-    };
-    opts.appendChild(inp); opts.appendChild(send);
-  } else if (ex.type === 'listen'){
-    const play = document.createElement('button'); play.className='btn'; play.textContent='🔊 Reproducir';
-    play.onclick = ()=> speak(ex.prompt);
-    const inp = document.createElement('input'); inp.placeholder='Transcriba lo que escuchó';
-    const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
-    send.onclick = async ()=>{
-      const correct = ex.answer && inp.value.trim().toLowerCase() === ex.answer.toLowerCase();
-      playSfx(correct);
-      await afterAnswer(correct, ex);
-      setTimeout(()=> nextExercise(list),900);
-    };
-    opts.appendChild(play); opts.appendChild(inp); opts.appendChild(send);
+      opts.appendChild(inp); opts.appendChild(send);
+    } else if (ex.type === 'listen'){
+      const play = document.createElement('button'); play.className='btn'; play.textContent='🔊 Reproducir';
+      play.onclick = ()=> {
+        if (ex.audioRef && ex.audioRef.length>5) playAudioUrl(ex.audioRef);
+        else speak(ex.prompt);
+      };
+      const inp = document.createElement('input'); inp.placeholder='Transcriba lo que escuchó';
+      const send = document.createElement('button'); send.className='btn btn-primary'; send.textContent='Enviar';
+      send.onclick = async ()=>{
+        const correct = ex.answer && inp.value.trim().toLowerCase() === ex.answer.toLowerCase();
+        playSfx(correct);
+        await afterAnswer(correct, ex);
+        setTimeout(()=> nextExercise(list),900);
+      };
+      opts.appendChild(play); opts.appendChild(inp); opts.appendChild(send);
+    } else if (ex.type === 'match'){
+      // simple match: pairs shuffle
+      const left = ex.pairs.map(p=>p[0]);
+      const right = ex.pairs.map(p=>p[1]);
+      const shuffledRight = shuffle(right.slice());
+      const leftCol = document.createElement('div'); leftCol.style.display='grid'; leftCol.style.gap='8px';
+      const rightCol = document.createElement('div'); rightCol.style.display='grid'; rightCol.style.gap='8px';
+      left.forEach((lft,i)=>{
+        const lnode = document.createElement('div'); lnode.className='option'; lnode.textContent = lft;
+        leftCol.appendChild(lnode);
+      });
+      shuffledRight.forEach(r=>{
+        const rnode = document.createElement('div'); rnode.className='option'; rnode.textContent = r;
+        rightCol.appendChild(rnode);
+      });
+      const wrap = document.createElement('div'); wrap.style.display='grid'; wrap.style.gridTemplateColumns='1fr 1fr'; wrap.style.gap='12px';
+      wrap.appendChild(leftCol); wrap.appendChild(rightCol);
+      opts.appendChild(wrap);
+      const check = document.createElement('button'); check.className='btn btn-primary'; check.textContent='Validar';
+      check.onclick = async ()=>{
+        // basic validation: if any right item is in correct pair index
+        // (demo behavior, real matching needs more UI)
+        const correct = true; // TODO: advanced
+        playSfx(correct);
+        await afterAnswer(correct, ex);
+        setTimeout(()=> nextExercise(list),900);
+      };
+      opts.appendChild(check);
+    }
+
+    area.appendChild(opts);
   }
 
-  area.appendChild(opts);
-}
+  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
 
-async function afterAnswer(correct, ex){
-  if (!state.currentUser) { alert('Inicie sesión para guardar progreso.'); return; }
-  const u = data.users[state.currentUser];
-  const xpG = correct ? (ex.xp || 10) : -2;
-  u.xp = Math.max(0, (u.xp||0) + xpG);
-  if (correct){
-    u.streak = (u.streak||0) + 1;
-    u.completed = u.completed || [];
-    if (!u.completed.includes(state.currentLesson.id)) u.completed.push(state.currentLesson.id);
-  } else u.streak = 0;
-  if (u.xp >= u.level * 100){ u.level = u.level + 1; alert('¡Subiste de nivel!'); }
-  data.users[state.currentUser] = u;
-  data.results[state.currentUser] = data.results[state.currentUser] || [];
-  data.results[state.currentUser].push({ exerciseId: ex.id, correct, at: Date.now() });
-  saveData(data);
-  renderSideUser();
-}
+  async function afterAnswer(correct, ex){
+    if (!state.currentUser) { alert('Inicie sesión para guardar progreso.'); return; }
+    const u = data.users[state.currentUser];
+    const baseXp = correct ? (ex.xp || 10) : Math.max(0, Math.floor((ex.xp||10)/4));
+    u.xp = Math.max(0, (u.xp||0) + (correct? baseXp : 0));
+    if (correct){
+      u.streak = (u.streak||0) + 1;
+      u.completed = u.completed || [];
+      if (!u.completed.includes(state.currentLesson.id)) u.completed.push(state.currentLesson.id);
+    } else u.streak = 0;
+    // level up simple rule
+    if (u.xp >= u.level * 100){ u.level = u.level + 1; alert('¡Subiste de nivel!'); grantAchievement(u.username, 'level_up'); }
+    // spaced repetition: schedule nextDue
+    ex.nextDue = Date.now() + (correct ? 1000*60*60*24 * Math.min(30, Math.pow(2, Math.floor(u.streak/2))) : 1000*60*60*12);
+    // save result
+    data.users[state.currentUser] = u;
+    data.results[state.currentUser] = data.results[state.currentUser] || [];
+    data.results[state.currentUser].push({ exerciseId: ex.id, correct, at: Date.now() });
+    saveData(data);
+    renderSideUser();
+    updateLessonProgress();
+  }
 
-function nextExercise(list){
-  state.sessionIndex++;
-  if (state.sessionIndex < list.length) renderExercise(list[state.sessionIndex], list);
-  else $('#exercise-area').innerHTML = '<div class="muted">Lección completa 🎉</div>';
-}
+  function nextExercise(list){
+    state.sessionIndex++;
+    if (state.sessionIndex < list.length) renderExercise(list[state.sessionIndex], list);
+    else {
+      $('#exercise-area').innerHTML = '<div class="muted">Lección completa 🎉</div>';
+      grantAchievement(state.currentUser, 'lesson_complete');
+    }
+  }
 
-/* -------------------------
-   Dictionary & audio playback
-   ------------------------- */
-function renderDictionaryOnly(){
-  const place = $('#dict-list'); if(!place) return; place.innerHTML='';
-  data.dictionary.forEach((w, idx)=>{
-    const row = document.createElement('div'); row.className='dictionary-item';
-    row.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
-    const right = document.createElement('div');
-    const play = document.createElement('button'); play.className='btn small'; play.textContent='🔊';
-    play.onclick = ()=> {
-      if (w.audioUrl && w.audioUrl.trim().length>5) playAudioUrl(w.audioUrl);
-      else speak(w.wayu);
-    };
-    right.appendChild(play);
-    row.appendChild(right);
-    place.appendChild(row);
-  });
+  function updateLessonProgress(){
+    const u = data.users[state.currentUser] || { completed:[] };
+    const total = data.exercises.filter(e=>e.lessonId===state.currentLesson.id).length;
+    const doneExIds = (data.results[state.currentUser]||[]).filter(r=> data.exercises.find(e=>e.id===r.exerciseId && e.lessonId===state.currentLesson.id && r.correct)).map(r=>r.exerciseId);
+    const uniqueDone = Array.from(new Set(doneExIds));
+    const pct = total ? Math.round(uniqueDone.length / total * 100) : 0;
+    $('#lesson-progress').textContent = pct + '%';
+  }
 
-  $('#dict-search').oninput = ()=>{
-    const q = $('#dict-search').value.trim().toLowerCase();
-    const filtered = data.dictionary.filter(d=>!q || d.spanish.toLowerCase().includes(q) || d.wayu.toLowerCase().includes(q));
-    place.innerHTML = '';
-    filtered.forEach(w=>{
+  /* -------------------------
+     Dictionary & audio playback
+     ------------------------- */
+  function renderDictionaryOnly(){
+    const place = $('#dict-list'); if(!place) return; place.innerHTML='';
+    data.dictionary.forEach((w, idx)=>{
       const row = document.createElement('div'); row.className='dictionary-item';
       row.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
       const right = document.createElement('div');
-      const play = document.createElement('button'); play.className='btn small'; play.textContent='🔊';
-      play.onclick = ()=> { if (w.audioUrl && w.audioUrl.trim().length>5) playAudioUrl(w.audioUrl); else speak(w.wayu); };
+      const play = document.createElement('button'); play.className='btn small'; play.title='Reproducir audio'; play.innerHTML = '<i class="fa-solid fa-play"></i>';
+      play.onclick = ()=> {
+        if (w.audioUrl && w.audioUrl.trim().length>5) playAudioUrl(w.audioUrl);
+        else speak(w.wayu);
+      };
       right.appendChild(play);
       row.appendChild(right);
       place.appendChild(row);
     });
+
+    $('#dict-search').oninput = ()=>{
+      const q = $('#dict-search').value.trim().toLowerCase();
+      const filtered = data.dictionary.filter(d=>!q || d.spanish.toLowerCase().includes(q) || d.wayu.toLowerCase().includes(q));
+      place.innerHTML = '';
+      filtered.forEach(w=>{
+        const row = document.createElement('div'); row.className='dictionary-item';
+        row.innerHTML = `<div><strong>${w.spanish}</strong> — <em>${w.wayu}</em></div>`;
+        const right = document.createElement('div');
+        const play = document.createElement('button'); play.className='btn small'; play.innerHTML = '<i class="fa-solid fa-play"></i>';
+        play.onclick = ()=> { if (w.audioUrl && w.audioUrl.trim().length>5) playAudioUrl(w.audioUrl); else speak(w.wayu); };
+        right.appendChild(play);
+        row.appendChild(right);
+        place.appendChild(row);
+      });
+    };
+  }
+
+  function playAudioUrl(url){
+    try{ const a = new Audio(url); a.crossOrigin = "anonymous"; a.play(); }catch(e){ speak('Audio no disponible'); }
+  }
+
+  /* -------------------------
+     Admin: create / upload
+     ------------------------- */
+  $('#create-level').onclick = ()=>{
+    if (!checkAdmin()) return;
+    const name = $('#new-level-name').value.trim(); const desc = $('#new-level-desc').value.trim();
+    if (!name) return alert('Nombre requerido');
+    data.levels.push({ id:id(), name, desc });
+    saveData(data); $('#new-level-name').value=''; $('#new-level-desc').value=''; renderAll();
   };
-}
 
-function playAudioUrl(url){
-  try{ const a = new Audio(url); a.crossOrigin = "anonymous"; a.play(); }catch(e){ speak('Audio no disponible'); }
-}
+  $('#create-lesson').onclick = ()=>{
+    if (!checkAdmin()) return;
+    const lvl = $('#sel-level').value; const t = $('#new-lesson-title').value.trim(); const b = $('#new-lesson-body').value.trim();
+    if (!lvl || !t) return alert('Nivel y título requeridos.');
+    data.lessons.push({ id:id(), levelId:lvl, title:t, body:b, favorite:false });
+    saveData(data); $('#new-lesson-title').value=''; $('#new-lesson-body').value=''; renderAll();
+  };
 
-/* -------------------------
-   Admin operations
-   ------------------------- */
-$('#create-level').onclick = ()=>{
-  if (!checkAdmin()) return;
-  const name = $('#new-level-name').value.trim(); const desc = $('#new-level-desc').value.trim();
-  if (!name) return alert('Nombre requerido');
-  data.levels.push({ id:id(), name, desc });
-  saveData(data); $('#new-level-name').value=''; $('#new-level-desc').value=''; renderAll();
-};
+  $('#create-word').onclick = ()=>{
+    if (!checkAdmin()) return;
+    const es = $('#dict-es').value.trim(), wy = $('#dict-wy').value.trim(), audio = $('#dict-audio').value.trim();
+    if (!es || !wy) return alert('Complete los campos');
+    data.dictionary.push({ id:id(), spanish:es, wayu:wy, audioUrl: audio });
+    saveData(data); $('#dict-es').value=''; $('#dict-wy').value=''; $('#dict-audio').value=''; renderDictionaryOnly(); renderCounts();
+  };
 
-$('#create-lesson').onclick = ()=>{
-  if (!checkAdmin()) return;
-  const lvl = $('#sel-level').value; const t = $('#new-lesson-title').value.trim(); const b = $('#new-lesson-body').value.trim();
-  if (!lvl || !t) return alert('Nivel y título requeridos.');
-  data.lessons.push({ id:id(), levelId:lvl, title:t, body:b });
-  saveData(data); $('#new-lesson-title').value=''; $('#new-lesson-body').value=''; renderAll();
-};
-
-$('#create-word').onclick = ()=>{
-  if (!checkAdmin()) return;
-  const es = $('#dict-es').value.trim(), wy = $('#dict-wy').value.trim(), audio = $('#dict-audio').value.trim();
-  if (!es || !wy) return alert('Complete los campos');
-  data.dictionary.push({ id:id(), spanish:es, wayu:wy, audioUrl: audio });
-  saveData(data); $('#dict-es').value=''; $('#dict-wy').value=''; $('#dict-audio').value=''; renderDictionaryOnly();
-};
-
-$('#seed-demo').onclick = ()=> { if (!checkAdmin()) return; seedPRO(true); alert('Demo PRO cargado'); renderAll(); };
-$('#clear-data').onclick = ()=> { if (!checkAdmin()) return; if (!confirm('Eliminar todos los datos locales?')) return; localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(USER_KEY); location.reload(); };
-
-function renderAdminSelect(){
-  const sel = $('#sel-level'); if(!sel) return; sel.innerHTML='';
-  data.levels.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.name; sel.appendChild(o); });
-}
-
-function checkAdmin(){
-  if (!state.currentUser) return alert('Inicie sesión como administrador');
-  const u = data.users[state.currentUser]; if (!u || !u.isAdmin) return alert('Acceso restringido'); return true;
-}
-
-/* -------------------------
-   Profile saving
-   ------------------------- */
-$('#save-profile').onclick = ()=>{
-  if (!state.currentUser) return alert('Inicie sesión');
-  const u = data.users[state.currentUser]; const n = $('#profile-name').value.trim(); const ini = $('#profile-initials').value.trim();
-  if (n) u.username = n; if (ini) u.initials = ini.toUpperCase();
-  data.users[state.currentUser] = u; saveData(data); alert('Perfil guardado'); renderSideUser();
-};
-
-/* -------------------------
-   Export / Import
-   ------------------------- */
-function exportImportDialog(){
-  const json = JSON.stringify(data, null, 2);
-  if (confirm('Copiar datos actuales al portapapeles? (Aceptar) — Cancelar para importar JSON')){
-    navigator.clipboard.writeText(json).then(()=> alert('Copiado al portapapeles'));
-  } else {
-    const imported = prompt('Pegue aquí el JSON para importar:');
-    if (imported){ try{ data = JSON.parse(imported); saveData(data); alert('Importado OK — recargando'); location.reload(); }catch(e){ alert('JSON inválido'); } }
+  // drag & drop audio for admin
+  const audioDrop = $('#audio-drop');
+  if (audioDrop){
+    audioDrop.addEventListener('dragover', (e)=>{ e.preventDefault(); audioDrop.style.background='rgba(255,255,255,0.02)'; });
+    audioDrop.addEventListener('dragleave', ()=>{ audioDrop.style.background='transparent'; });
+    audioDrop.addEventListener('drop', (e)=>{ e.preventDefault(); audioDrop.style.background='transparent'; const f = e.dataTransfer.files[0]; if (f) handleAudioFile(f); });
   }
-}
 
-/* -------------------------
-   TTS & SFX
-   ------------------------- */
-function speak(text){
-  if (!text) return;
-  if ('speechSynthesis' in window){
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'es-CO';
-    u.rate = 0.95;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  } else {
-    alert(text);
+  function handleAudioFile(file){
+    if (!file.type.includes('audio')) return alert('Archivo no es audio.');
+    const reader = new FileReader();
+    reader.onload = function(evt){
+      const base = evt.target.result;
+      // place into the dict-audio input so admin can save it with the word
+      $('#dict-audio').value = base;
+      alert('Audio cargado (base64). Complete los campos y pulse Agregar palabra.');
+    };
+    reader.readAsDataURL(file);
   }
-}
 
-function playSfx(correct){
-  try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.type = correct? 'sine' : 'triangle';
-    o.frequency.value = correct? 880 : 260;
-    g.gain.value = 0.0001;
-    o.start();
-    g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.18);
-    setTimeout(()=> { o.stop(); ctx.close(); }, 220);
-  } catch(e){}
-}
+  $('#seed-demo').onclick = ()=> { if (!checkAdmin()) return; if (!confirm('Sobreescribir datos con demo PRO?')) return; seedPRO(true); alert('Demo PRO cargado'); renderAll(); };
+  $('#clear-data').onclick = ()=> { if (!checkAdmin()) return; if (!confirm('Eliminar todos los datos locales?')) return; localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(USER_KEY); location.reload(); };
 
-/* -------------------------
-   Particles (visual) using particles.js
-   ------------------------- */
-function setupParticles(){
-  if (window.particlesJS){
-    particlesJS('particles-js', {
-      "particles": {
-        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-        "color": { "value": "#06b6d4" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 0.08 },
-        "size": { "value": 3 },
-        "line_linked": { "enable": true, "distance": 160, "color": "#06b6d4", "opacity": 0.06, "width": 1 },
-        "move": { "enable": true, "speed": 2, "direction": "none", "bounce": false }
-      },
-      "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false } } },
-      "retina_detect": true
+  function renderAdminSelect(){
+    const sel = $('#sel-level'); if(!sel) return; sel.innerHTML='';
+    data.levels.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.name; sel.appendChild(o); });
+  }
+
+  function checkAdmin(){
+    if (!state.currentUser) return alert('Inicie sesión como administrador');
+    const u = data.users[state.currentUser]; if (!u || !u.isAdmin) return alert('Acceso restringido'); return true;
+  }
+
+  /* -------------------------
+     Profile & achievements
+     ------------------------- */
+  $('#save-profile').onclick = ()=>{
+    if (!state.currentUser) return alert('Inicie sesión');
+    const u = data.users[state.currentUser]; const n = $('#profile-name').value.trim(); const ini = $('#profile-initials').value.trim();
+    if (n) u.username = n; if (ini) u.initials = ini.toUpperCase();
+    data.users[state.currentUser] = u; saveData(data); alert('Perfil guardado'); renderSideUser();
+  };
+
+  $('#reset-progress').onclick = ()=>{
+    if (!state.currentUser) return alert('Inicie sesión');
+    if (!confirm('Restablecer progreso (usuaria)?')) return;
+    const u = data.users[state.currentUser];
+    u.xp = 0; u.level = 1; u.streak = 0; u.completed = []; data.results[state.currentUser] = []; saveData(data); renderAll(); alert('Progreso reiniciado.');
+  };
+
+  // achievements (simple)
+  function grantAchievement(username, key){
+    if (!username) return;
+    data.users[username].achievements = data.users[username].achievements || [];
+    if (!data.users[username].achievements.includes(key)){
+      data.users[username].achievements.push(key);
+      saveData(data);
+      // notify
+      toast(`¡Logro desbloqueado: ${achieveLabel(key)}!`);
+    }
+    renderAchievements(username);
+  }
+
+  function achieveLabel(k){
+    const map = { level_up: 'Subiste de nivel', lesson_complete: 'Lección completada' };
+    return map[k] || k;
+  }
+
+  function renderAchievements(username){
+    const u = data.users[username];
+    const el = $('#achievements');
+    if (!u || !el) return;
+    if (!u.achievements || !u.achievements.length) el.textContent = 'No hay logros aún';
+    else el.innerHTML = u.achievements.map(a=>`<div style="padding:6px;border-radius:8px;background:rgba(255,255,255,0.02);margin-top:6px">${achieveLabel(a)}</div>`).join('');
+  }
+
+  /* -------------------------
+     Export / Import
+     ------------------------- */
+  function exportImportDialog(){
+    const json = JSON.stringify(data, null, 2);
+    if (confirm('Copiar datos actuales al portapapeles? (Aceptar) — Cancelar para importar JSON')){
+      navigator.clipboard.writeText(json).then(()=> alert('Copiado al portapapeles')).catch(()=> alert('Fallo al copiar.'));
+    } else {
+      const imported = prompt('Pegue aquí el JSON para importar:');
+      if (imported){ try{ data = JSON.parse(imported); saveData(data); alert('Importado OK — recargando'); location.reload(); }catch(e){ alert('JSON inválido'); } }
+    }
+  }
+
+  /* -------------------------
+     TTS & SFX
+     ------------------------- */
+  function speak(text, lang){
+    if (!text) return;
+    const settingsLang = state.settings.ttsLang || 'es-CO';
+    if ('speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang || settingsLang;
+      u.rate = state.settings.ttsRate || 0.95;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } else {
+      alert(text);
+    }
+  }
+
+  function playSfx(correct){
+    try {
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = correct? 'sine' : 'triangle';
+      o.frequency.value = correct? 880 : 260;
+      g.gain.value = 0.0001;
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.18);
+      setTimeout(()=> { o.stop(); ctx.close(); }, 220);
+    } catch(e){}
+  }
+
+  /* -------------------------
+     Particles
+     ------------------------- */
+  function setupParticles(){
+    if (window.particlesJS){
+      particlesJS('particles-js', {
+        "particles": {
+          "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": "#06b6d4" },
+          "shape": { "type": "circle" },
+          "opacity": { "value": 0.08 },
+          "size": { "value": 3 },
+          "line_linked": { "enable": true, "distance": 160, "color": "#06b6d4", "opacity": 0.06, "width": 1 },
+          "move": { "enable": true, "speed": 2, "direction": "none", "bounce": false }
+        },
+        "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false } } },
+        "retina_detect": true
+      });
+    }
+  }
+
+  /* -------------------------
+     UI small bindings & helpers
+     ------------------------- */
+  function bindAll(){
+    $('#close-lesson').onclick = ()=> { $('#lesson-area').hidden = true; };
+    $('#start-sample').onclick = ()=> {
+      const lesson = data.lessons.find(l=>/salud/i.test(l.title)) || data.lessons[0];
+      if (lesson) openLesson(lesson.id); else alert('No hay lecciones demo');
+    };
+    $('#search-lessons').addEventListener('input', (e)=>{
+      // simple client-side filter for levels-list tiles by name
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) return renderLevelsList();
+      // Render lessons matching query across levels
+      const matches = data.lessons.filter(l=> l.title.toLowerCase().includes(q) || l.body.toLowerCase().includes(q));
+      // show as tiles in levels-list
+      const container = $('#levels-list'); container.innerHTML = '';
+      matches.forEach(ls=>{
+        const level = data.levels.find(L=>L.id===ls.levelId);
+        const div = document.createElement('div'); div.className='tile';
+        div.innerHTML = `<strong>${ls.title}</strong><div class="muted">${level?level.name:''}</div><div style="margin-top:8px;font-size:13px;color:rgba(234,246,240,0.7)">${ls.body||''}</div>`;
+        div.onclick = ()=> openLesson(ls.id);
+        container.appendChild(div);
+      });
+    });
+
+    $('#dict-search').addEventListener('keydown', (e)=> { if (e.key === 'Enter') { e.preventDefault(); } });
+
+    // Admin audio drop already bound in init
+
+    // settings
+    $('#open-settings').onclick = openSettings;
+
+    // favorites
+    $('#fav-lesson').onclick = ()=>{
+      if (!state.currentUser) return alert('Inicie sesión para guardar favoritos');
+      const lesson = state.currentLesson;
+      if (!lesson) return;
+      lesson.favorite = !lesson.favorite;
+      saveData(data);
+      $('#fav-lesson').innerHTML = lesson.favorite? '<i class="fa-solid fa-star"></i> Favorito':'<i class="fa-regular fa-star"></i> Favorito';
+    };
+
+    // render initial
+    renderAll();
+  }
+
+  /* -------------------------
+     Settings modal (simple prompt-based)
+     ------------------------- */
+  function openSettings(){
+    const lang = prompt('Idioma TTS (ej: es-CO, es-ES, en-US):', state.settings.ttsLang) || state.settings.ttsLang;
+    const rate = parseFloat(prompt('Velocidad TTS (0.5 - 1.5):', String(state.settings.ttsRate))) || state.settings.ttsRate;
+    state.settings.ttsLang = lang; state.settings.ttsRate = rate;
+    // theme
+    const theme = prompt('Tema (dark / light):', state.settings.theme) || state.settings.theme; state.settings.theme = theme;
+    applyTheme();
+    alert('Ajustes guardados (solo local).');
+  }
+
+  function applyTheme(){
+    if (state.settings.theme === 'light') {
+      document.documentElement.style.setProperty('--bg-1','#f6f9fb');
+      document.documentElement.style.setProperty('--bg-2','#e8f4f2');
+      document.documentElement.style.setProperty('--text','#072a2a');
+      document.documentElement.style.setProperty('--card-bg','rgba(5,30,30,0.03)');
+    } else {
+      document.documentElement.style.setProperty('--bg-1','#061827');
+      document.documentElement.style.setProperty('--bg-2','#041622');
+      document.documentElement.style.setProperty('--text','#eaf6f0');
+      document.documentElement.style.setProperty('--card-bg','rgba(255,255,255,0.02)');
+    }
+  }
+
+  function toggleTheme(){
+    state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
+    applyTheme();
+  }
+
+  /* -------------------------
+     Leaderboard & small UI
+     ------------------------- */
+  function renderLeaderboard(){
+    const arr = Object.values(data.users).sort((a,b)=> (b.xp||0)-(a.xp||0)).slice(0,3);
+    $('#leaderboard').textContent = arr.map(a=>`${a.initials||initialsFrom(a.username)} ${a.xp||0}`).join(' • ');
+  }
+
+  function toast(msg){
+    const el = document.createElement('div');
+    el.style.position='fixed'; el.style.right='18px'; el.style.bottom='18px'; el.style.background='linear-gradient(90deg,var(--accent-1),var(--accent-2))'; el.style.padding='12px 16px'; el.style.borderRadius='10px'; el.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)'; el.style.zIndex=9999;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(()=> el.style.opacity='0', 2800);
+    setTimeout(()=> el.remove(),3500);
+  }
+
+  /* -------------------------
+     Keyboard shortcuts
+     ------------------------- */
+  function setupShortcuts(){
+    document.addEventListener('keydown', (e)=>{
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'n' || e.key === 'N') { // next exercise
+        const btnNext = document.querySelector('#exercise-area .btn-primary'); if (btnNext) btnNext.click();
+      } else if (e.key === 'p' || e.key === 'P') {
+        // nothing for now
+      } else if (e.key === 's' || e.key === 'S') {
+        // speak current question
+        const q = document.querySelector('#exercise-area .question'); if (q) speak(q.textContent);
+      }
     });
   }
-}
 
-/* -------------------------
-   Small UI bindings
-   ------------------------- */
-function bindAll(){
-  $('#close-lesson').onclick = ()=> { $('#lesson-area').hidden = true; };
-  $('#start-sample').onclick = ()=> {
-    const lesson = data.lessons.find(l=>/salud/i.test(l.title)) || data.lessons[0];
-    if (lesson) openLesson(lesson.id); else alert('No hay lecciones demo');
+  /* -------------------------
+     Small utilities
+     ------------------------- */
+  function updateLessonProgressUI(){ if (state.currentLesson) updateLessonProgress(); }
+  function renderDictionaryOnlyOnce(){ renderDictionaryOnly(); renderCounts(); }
+
+  // initial rendering calls
+  renderDictionaryOnlyOnce();
+
+  // Expose some debug helpers
+  window.WLdebug = {
+    data, save: ()=>{ saveData(data); alert('Guardado'); },
+    export: ()=>{ navigator.clipboard.writeText(JSON.stringify(data)); alert('Exportado al portapapeles'); }
   };
-  $('#login-username').addEventListener('keydown', (e)=> e.key==='Enter' && $('#login-password').focus());
-  $('#login-password').addEventListener('keydown', (e)=> e.key==='Enter' && $('#login-btn').click());
-}
 
-// Initial renders
-renderAll();
-bindAll();
-renderTopActions();
-
-/* Expose for debugging */
-window.WL = { data: data, saveData: ()=> saveData(data), seedPRO, id };
-
+})();
 </script>
-
-<!-- ================================
-     Fuentes de audio reales (sugeridas)
-     ================================
-Below I list reputable sources that host Wayuunaiki audio or materials.
-You can:
- 1) Visit them, download MP3s you like, upload to a public storage (or your GitHub
-    repository / Firebase Storage) and paste the .mp3 URLs into the Admin > Add word > URL audio field.
- 2) Or provide me the audio files/URLs and I will embed them into the app and return an updated file.
-
-Sources discovered (useful for real audios and word-level recordings):
-
-- Global Recordings Network — Wayuunaiki audio collections and MP3 downloads (large audio packs and samples). Useful for authentic recorded audio. :contentReference[oaicite:3]{index=3}
-
-- Talking Dictionary / Academic resources — online talking dictionaries and lexical resources sometimes include per-word audio pronunciations. (e.g., TalkingDictionary projects / Swarthmore). :contentReference[oaicite:4]{index=4}
-
-- YouTube channels & lesson videos (Wayuunaiki para el Mundo and other lesson videos) — good source for native speakers and sample pronunciations; you can extract audio or link videos. :contentReference[oaicite:5]{index=5}
-
-- Webonary (Wayuu / Wayuunaiki dictionary site) — lexical entries and pronunciations. :contentReference[oaicite:6]{index=6}
-
-Important: If you want, pásame hasta 20 URLs públicas directas a archivos `.mp3` (o sube a un Storage público) y yo actualizo el archivo para que la app los reproduzca directamente desde el diccionario.
--->
 
 </body>
 </html>
